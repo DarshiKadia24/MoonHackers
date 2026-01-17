@@ -3,7 +3,6 @@ import {
   Container,
   Typography,
   Box,
-  
   CardContent,
   TextField,
   Button,
@@ -12,41 +11,60 @@ import {
   Alert,
   MenuItem,
   Divider,
+  LinearProgress,
+  Slider,
+  Tabs,
+  Tab,
+  Paper,
 } from '@mui/material';
 import {
-  LocalHospital as HospitalIcon,
-  MedicalServices as MedicalIcon,
-  
-  Favorite as HeartIcon,
-  Psychology as BrainIcon,
+  Stars as StarsIcon,
+  TrendingUp as TrendingUpIcon,
+  Code as CodeIcon,
+  Storage as StorageIcon,
   Security as SecurityIcon,
   Analytics as AnalyticsIcon,
   People as PeopleIcon,
+  CheckCircle as CheckCircleIcon,
+  Upload as UploadIcon,
+  EmojiEvents as TrophyIcon,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { skillsAPI, progressAPI, recommendationsAPI } from '../services/api';
 import { getUserId } from '../utils/userHelpers';
-import GlassCard from '../components/GlassCard';
-import MedicalProficiencySelector from '../components/MedicalProficiencySelector';
-import MedicalEvidenceUpload from '../components/MedicalEvidenceUpload';
-import DiagnosisReport from '../components/DiagnosisReport';
-import HospitalMonitorProgress from '../components/HospitalMonitorProgress';
-import StethoscopeAnimation from '../components/StethoscopeAnimation';
-import ECGAnimation from '../components/ECGAnimation';
 import PageTransition from '../components/PageTransition';
 import ConfettiCelebration from '../components/ConfettiCelebration';
 import SkeletonLoader from '../components/SkeletonLoader';
 import SkillTooltip from '../components/SkillTooltip';
-import { healthcareColors } from '../theme';
+import PremiumSidebar from '../components/PremiumSidebar';
+import PremiumTopBar from '../components/PremiumTopBar';
+import { healthcareColors, shadows } from '../theme';
 
-// Medical system mapping
-const systemMapping = {
-  Clinical: { name: 'Cardiovascular System', icon: <HeartIcon />, color: healthcareColors.accent },
-  Technical: { name: 'Neurological System', icon: <BrainIcon />, color: healthcareColors.primary },
-  Regulatory: { name: 'Immune System', icon: <SecurityIcon />, color: '#f57c00' },
-  Analytical: { name: 'Respiratory System', icon: <AnalyticsIcon />, color: healthcareColors.secondary },
-  'Soft Skills': { name: 'Endocrine System', icon: <PeopleIcon />, color: '#9c27b0' },
+// Professional category mapping
+const categoryMapping = {
+  Clinical: { name: 'Core Technical Skills', icon: <CodeIcon />, color: healthcareColors.primary },
+  Technical: { name: 'Advanced Technical', icon: <StorageIcon />, color: healthcareColors.secondary },
+  Regulatory: { name: 'Compliance & Security', icon: <SecurityIcon />, color: '#D4AF37' },
+  Analytical: { name: 'Data & Analytics', icon: <AnalyticsIcon />, color: '#6366F1' },
+  'Soft Skills': { name: 'Leadership & Communication', icon: <PeopleIcon />, color: '#8B5CF6' },
+};
+
+// Proficiency level mapping (replacing medical terminology)
+const proficiencyLevels = [
+  { value: 1, label: 'Beginner', description: 'Getting started with fundamentals' },
+  { value: 2, label: 'Intermediate', description: 'Comfortable with core concepts' },
+  { value: 3, label: 'Proficient', description: 'Strong working knowledge' },
+  { value: 4, label: 'Expert', description: 'Advanced mastery and expertise' },
+  { value: 5, label: 'Master', description: 'Industry-leading proficiency' },
+];
+
+const proficiencyColors = {
+  1: '#94A3B8',
+  2: '#6366F1',
+  3: '#8B5CF6',
+  4: '#D4AF37',
+  5: '#F0C850',
 };
 
 const SkillsAssessment = () => {
@@ -55,24 +73,22 @@ const SkillsAssessment = () => {
   const [assessments, setAssessments] = useState({});
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [, setSummary] = useState(null);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [showStethoscope, setShowStethoscope] = useState(false);
-  const [diagnosisReport, setDiagnosisReport] = useState(null);
-  const [ecgDrawn, setEcgDrawn] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
+  const [skillGaps, setSkillGaps] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const categories = [
-    { label: 'Clinical Skills', value: 'Clinical' },
-    { label: 'Technical Skills', value: 'Technical' },
-    { label: 'Regulatory', value: 'Regulatory' },
-    { label: 'Analytical', value: 'Analytical' },
-    { label: 'Soft Skills', value: 'Soft Skills' },
+    { label: 'Core Technical Skills', value: 'Clinical' },
+    { label: 'Advanced Technical', value: 'Technical' },
+    { label: 'Compliance & Security', value: 'Regulatory' },
+    { label: 'Data & Analytics', value: 'Analytical' },
+    { label: 'Leadership & Communication', value: 'Soft Skills' },
   ];
 
   useEffect(() => {
     fetchSkills();
-    // Trigger ECG animation on load
-    setTimeout(() => setEcgDrawn(true), 500);
   }, []);
 
   const fetchSkills = async () => {
@@ -127,7 +143,6 @@ const SkillsAssessment = () => {
       (skillId) => assessments[skillId]?.rating
     );
 
-    // Compare assessed skills with recommended skills
     assessedSkills.forEach((skillId) => {
       const assessment = assessments[skillId];
       const skill = skills.find((s) => s._id === skillId);
@@ -135,7 +150,7 @@ const SkillsAssessment = () => {
         gaps.push({
           skillName: skill.name,
           currentLevel: getProficiencyName(assessment.rating),
-          requiredLevel: 'Resident',
+          requiredLevel: 'Proficient',
         });
       }
     });
@@ -144,14 +159,8 @@ const SkillsAssessment = () => {
   };
 
   const getProficiencyName = (level) => {
-    const levels = {
-      1: 'Novice',
-      2: 'Intern',
-      3: 'Resident',
-      4: 'Specialist',
-      5: 'Chief of Staff',
-    };
-    return levels[level] || 'Not assessed';
+    const proficiency = proficiencyLevels.find(p => p.value === level);
+    return proficiency ? proficiency.label : 'Not assessed';
   };
 
   const handleSaveAssessment = async () => {
@@ -168,8 +177,8 @@ const SkillsAssessment = () => {
 
       for (const [skillId, assessment] of Object.entries(assessments)) {
         if (assessment.rating) {
-          const proficiencyLevels = ['beginner', 'intermediate', 'advanced', 'expert', 'master'];
-          const level = proficiencyLevels[assessment.rating - 1] || 'beginner';
+          const proficiencyLevelNames = ['beginner', 'intermediate', 'advanced', 'expert', 'master'];
+          const level = proficiencyLevelNames[assessment.rating - 1] || 'beginner';
           const score = (assessment.rating / 5) * 100;
 
           const updateData = {
@@ -189,30 +198,14 @@ const SkillsAssessment = () => {
 
       await Promise.all(updates);
 
-      const totalSkills = skills.length;
-      const assessedSkills = Object.keys(assessments).filter(
-        (skillId) => assessments[skillId]?.rating
-      ).length;
-      const averageRating =
-        Object.values(assessments)
-          .filter((a) => a.rating)
-          .reduce((sum, a) => sum + (a.rating || 0), 0) / assessedSkills;
-      const completionRate = ((assessedSkills / totalSkills) * 100).toFixed(1);
-
-      setSummary({
-        totalSkills,
-        assessedSkills,
-        averageRating: averageRating.toFixed(1),
-        completionRate,
-      });
-
-      // Generate diagnosis report
-      const skillGaps = calculateSkillGaps();
-      let recommendations = [];
+      // Generate skill gaps and recommendations
+      const gaps = calculateSkillGaps();
+      setSkillGaps(gaps);
       
+      let recs = [];
       try {
         const recResponse = await recommendationsAPI.getUserRecommendations(userId);
-        recommendations = [
+        recs = [
           ...(recResponse.data.recommendations?.courses?.slice(0, 3) || []).map((c) => ({
             ...c,
             type: 'Course',
@@ -225,17 +218,14 @@ const SkillsAssessment = () => {
       } catch (error) {
         console.error('Error fetching recommendations:', error);
       }
-
-      setDiagnosisReport({
-        skillGaps,
-        recommendations,
-      });
-
-      // Show completion animation
-      setShowStethoscope(true);
-      setTimeout(() => setShowStethoscope(false), 3000);
+      
+      setRecommendations(recs);
 
       // Check for milestones
+      const assessedSkills = Object.keys(assessments).filter(
+        (skillId) => assessments[skillId]?.rating
+      ).length;
+      
       if (assessedSkills >= 10) {
         setShowConfetti(true);
       }
@@ -261,316 +251,559 @@ const SkillsAssessment = () => {
   if (loading && skills.length === 0) {
     return (
       <PageTransition>
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-          <Box sx={{ textAlign: 'center', py: 8 }}>
-            <ECGAnimation width={400} height={150} color={healthcareColors.primary} />
-            <Typography variant="h6" sx={{ mt: 3, color: 'text.secondary' }}>
-              Loading clinical assessment...
-            </Typography>
-            <Box sx={{ mt: 4 }}>
-              <SkeletonLoader variant="rectangular" width="100%" height={200} count={3} />
-            </Box>
+        <Box sx={{ display: 'flex', height: '100vh' }}>
+          <PremiumSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+          <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+            <PremiumTopBar onMenuClick={() => setSidebarOpen(true)} />
+            <Container maxWidth="lg" sx={{ mt: 12, mb: 4 }}>
+              <Box sx={{ textAlign: 'center', py: 8 }}>
+                <Typography variant="h6" sx={{ mt: 3, color: 'text.secondary' }}>
+                  Loading skill assessment...
+                </Typography>
+                <Box sx={{ mt: 4 }}>
+                  <SkeletonLoader variant="rectangular" width="100%" height={200} count={3} />
+                </Box>
+              </Box>
+            </Container>
           </Box>
-        </Container>
+        </Box>
       </PageTransition>
     );
   }
 
   return (
     <PageTransition>
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <ConfettiCelebration trigger={showConfetti} onComplete={() => setShowConfetti(false)} />
+      <Box sx={{ display: 'flex', height: '100vh' }}>
+        <PremiumSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
+          <PremiumTopBar onMenuClick={() => setSidebarOpen(true)} />
+          
+          <Container maxWidth="lg" sx={{ mt: 12, mb: 4, flexGrow: 1 }}>
+            <ConfettiCelebration trigger={showConfetti} onComplete={() => setShowConfetti(false)} />
 
-        {/* ECG Header Animation */}
-        <motion.div
-          initial={{ opacity: 0, scaleX: 0 }}
-          animate={{ opacity: ecgDrawn ? 1 : 0, scaleX: ecgDrawn ? 1 : 0 }}
-          transition={{ duration: 1.5, ease: 'easeInOut' }}
-          style={{ mb: 3 }}
-        >
-          <Box
-            sx={{
-              height: 80,
-              bgcolor: 'rgba(13, 71, 161, 0.05)',
-              borderRadius: 2,
-              overflow: 'hidden',
-              position: 'relative',
-            }}
-          >
-            <ECGAnimation width={1200} height={80} color={healthcareColors.primary} />
-          </Box>
-        </motion.div>
-
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-            <HospitalIcon sx={{ fontSize: 48, color: healthcareColors.primary, mr: 2 }} />
-            <Box>
-              <Typography variant="h4" component="h1" sx={{ fontWeight: 700, mb: 0.5 }}>
-                Clinical Skill Assessment
-              </Typography>
-              <Typography variant="body1" color="text.secondary">
-                Comprehensive evaluation of healthcare technology competencies
-              </Typography>
-            </Box>
-          </Box>
-
-          {/* Overall Progress Monitor */}
-          <Box sx={{ mb: 4 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-              <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                Assessment Progress
-              </Typography>
-              <Typography variant="body2" sx={{ fontWeight: 600, color: healthcareColors.primary }}>
-                {Math.round(getOverallProgress())}%
-              </Typography>
-            </Box>
-            <HospitalMonitorProgress value={getOverallProgress()} height={12} />
-          </Box>
-        </motion.div>
-
-        {/* Stethoscope Completion Animation */}
-        <AnimatePresence>
-          {showStethoscope && (
+            {/* Premium Header */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
             >
-              <GlassCard sx={{ mb: 4 }}>
-                <StethoscopeAnimation message="Assessment Complete" />
-              </GlassCard>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Success Alert */}
-        <AnimatePresence>
-          {saved && !showStethoscope && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-            >
-              <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>
-                Clinical assessment saved successfully! Diagnosis report generated.
-              </Alert>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Diagnosis Report */}
-        {diagnosisReport && (
-          <Box sx={{ mb: 4 }}>
-            <DiagnosisReport
-              skillGaps={diagnosisReport.skillGaps}
-              recommendations={diagnosisReport.recommendations}
-            />
-          </Box>
-        )}
-
-        {/* System Checks (Skill Categories) */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-        >
-          {categories.map((category, catIndex) => {
-            const categorySkills = getSkillsByCategory(category.value);
-            if (categorySkills.length === 0) return null;
-
-            const system = systemMapping[category.value];
-
-            return (
-              <Box key={category.value} sx={{ mb: 5 }}>
-                {/* System Header */}
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: catIndex * 0.1 }}
-                >
+              <Box sx={{ mb: 4 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                   <Box
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      mb: 3,
                       p: 2,
-                      bgcolor: `${system.color}15`,
                       borderRadius: 3,
-                      border: `2px solid ${system.color}40`,
+                      background: healthcareColors.gradientPrimary,
+                      color: 'white',
+                      mr: 3,
+                      boxShadow: shadows.colored.primary,
                     }}
                   >
-                    <Box
-                      sx={{
-                        p: 1.5,
-                        borderRadius: 2,
-                        bgcolor: system.color,
-                        color: 'white',
-                        mr: 2,
-                      }}
-                    >
-                      {system.icon}
-                    </Box>
-                    <Box sx={{ flexGrow: 1 }}>
-                      <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
-                        {system.name} Check
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {category.label} • {categorySkills.length} skills to assess
-                      </Typography>
-                    </Box>
-                    <Chip
-                      label={`${categorySkills.length} Skills`}
-                      sx={{ bgcolor: system.color, color: 'white', fontWeight: 600 }}
-                    />
+                    <StarsIcon sx={{ fontSize: 40 }} />
                   </Box>
-                </motion.div>
+                  <Box>
+                    <Typography variant="h3" component="h1" sx={{ fontWeight: 700, mb: 0.5 }}>
+                      Skills Assessment
+                    </Typography>
+                    <Typography variant="body1" color="text.secondary">
+                      Evaluate your professional competencies and track your growth
+                    </Typography>
+                  </Box>
+                </Box>
 
-                {/* Skills Grid */}
-                <Grid container spacing={3}>
-                  {categorySkills.map((skill, index) => (
-                    <Grid item xs={12} md={6} key={skill._id}>
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: (catIndex * 0.1) + (index * 0.05) }}
-                        whileHover={{ y: -4 }}
-                      >
-                        <SkillTooltip skill={skill}>
-                          <GlassCard
+                {/* Premium Progress Bar */}
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    background: healthcareColors.gradientCard,
+                    border: `1px solid ${healthcareColors.primary}20`,
+                  }}
+                >
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: healthcareColors.primary }}>
+                      Assessment Progress
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 700, color: healthcareColors.primary }}>
+                      {Math.round(getOverallProgress())}%
+                    </Typography>
+                  </Box>
+                  <LinearProgress
+                    variant="determinate"
+                    value={getOverallProgress()}
+                    sx={{
+                      height: 10,
+                      borderRadius: 2,
+                      bgcolor: 'rgba(30, 58, 95, 0.08)',
+                      '& .MuiLinearProgress-bar': {
+                        borderRadius: 2,
+                        background: healthcareColors.gradientPrimary,
+                      },
+                    }}
+                  />
+                </Paper>
+              </Box>
+            </motion.div>
+
+            {/* Success Alert */}
+            <AnimatePresence>
+              {saved && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                >
+                  <Alert
+                    icon={<CheckCircleIcon />}
+                    severity="success"
+                    sx={{
+                      mb: 3,
+                      borderRadius: 3,
+                      border: '1px solid rgba(16, 185, 129, 0.2)',
+                      boxShadow: '0 4px 12px rgba(16, 185, 129, 0.15)',
+                    }}
+                  >
+                    Skills assessment saved successfully! Your progress has been updated.
+                  </Alert>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Skill Gaps & Recommendations */}
+            {(skillGaps.length > 0 || recommendations.length > 0) && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 4,
+                    mb: 4,
+                    borderRadius: 3,
+                    background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%)',
+                    border: '1px solid rgba(99, 102, 241, 0.15)',
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                    <TrophyIcon sx={{ fontSize: 32, color: healthcareColors.secondary, mr: 2 }} />
+                    <Typography variant="h5" sx={{ fontWeight: 700 }}>
+                      Growth Opportunities
+                    </Typography>
+                  </Box>
+
+                  {skillGaps.length > 0 && (
+                    <Box sx={{ mb: 3 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2 }}>
+                        Skills to Improve:
+                      </Typography>
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                        {skillGaps.slice(0, 5).map((gap, index) => (
+                          <Chip
+                            key={index}
+                            label={`${gap.skillName}: ${gap.currentLevel} → ${gap.requiredLevel}`}
                             sx={{
-                              height: '100%',
-                              border: `2px solid ${system.color}30`,
+                              bgcolor: 'rgba(99, 102, 241, 0.1)',
+                              color: healthcareColors.secondary,
+                              fontWeight: 500,
+                            }}
+                          />
+                        ))}
+                      </Box>
+                    </Box>
+                  )}
+
+                  {recommendations.length > 0 && (
+                    <Box>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2 }}>
+                        Recommended Resources:
+                      </Typography>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                        {recommendations.slice(0, 3).map((rec, index) => (
+                          <Box
+                            key={index}
+                            sx={{
+                              p: 2,
+                              borderRadius: 2,
+                              bgcolor: 'white',
+                              border: '1px solid rgba(99, 102, 241, 0.1)',
                             }}
                           >
-                            <CardContent sx={{ p: 3 }}>
-                              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                                <Box sx={{ flexGrow: 1 }}>
-                                  <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5 }}>
-                                    {skill.name}
-                                  </Typography>
-                                  <Chip
-                                    label={category.label}
-                                    size="small"
-                                    sx={{
-                                      bgcolor: `${system.color}20`,
-                                      color: system.color,
-                                      fontWeight: 600,
-                                    }}
-                                  />
-                                </Box>
-                              </Box>
+                            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                              {rec.title || rec.name}
+                            </Typography>
+                            <Chip
+                              label={rec.type}
+                              size="small"
+                              sx={{ mt: 0.5, bgcolor: 'rgba(99, 102, 241, 0.1)' }}
+                            />
+                          </Box>
+                        ))}
+                      </Box>
+                    </Box>
+                  )}
+                </Paper>
+              </motion.div>
+            )}
 
-                              {skill.description && (
-                                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                                  {skill.description}
-                                </Typography>
-                              )}
-
-                              {/* Medical Context */}
-                              {skill.healthcareContext && (
-                                <Box
-                                  sx={{
-                                    p: 1.5,
-                                    mb: 3,
-                                    bgcolor: 'rgba(13, 71, 161, 0.05)',
-                                    borderRadius: 2,
-                                  }}
-                                >
-                                  <Typography variant="caption" sx={{ fontWeight: 600, display: 'block', mb: 0.5 }}>
-                                    Clinical Context:
-                                  </Typography>
-                                  <Typography variant="caption" color="text.secondary">
-                                    Patient Impact: {skill.healthcareContext.patientImpact} • Clinical Relevance:{' '}
-                                    {skill.healthcareContext.clinicalRelevance}
-                                  </Typography>
-                                </Box>
-                              )}
-
-                              <Divider sx={{ my: 3 }} />
-
-                              {/* Medical Proficiency Selector */}
-                              <MedicalProficiencySelector
-                                value={assessments[skill._id]?.rating || 0}
-                                onChange={(level) => handleProficiencyChange(skill._id, level)}
-                                skillName={skill.name}
-                              />
-
-                              <Divider sx={{ my: 3 }} />
-
-                              {/* Evidence Upload */}
-                              <MedicalEvidenceUpload
-                                onFileUpload={(files) => handleEvidenceUpload(skill._id, files)}
-                                uploadedFiles={assessments[skill._id]?.evidenceFiles || []}
-                              />
-
-                              <Divider sx={{ my: 3 }} />
-
-                              {/* Goal Selector */}
-                              <TextField
-                                fullWidth
-                                select
-                                label="Target Proficiency Goal"
-                                value={assessments[skill._id]?.goal || ''}
-                                onChange={(e) => handleGoalChange(skill._id, e.target.value)}
-                                size="small"
-                              >
-                                <MenuItem value="">No goal set</MenuItem>
-                                <MenuItem value="beginner">Novice (Medical Student)</MenuItem>
-                                <MenuItem value="intermediate">Intern</MenuItem>
-                                <MenuItem value="advanced">Resident</MenuItem>
-                                <MenuItem value="expert">Specialist</MenuItem>
-                                <MenuItem value="master">Chief of Staff</MenuItem>
-                              </TextField>
-                            </CardContent>
-                          </GlassCard>
-                        </SkillTooltip>
-                      </motion.div>
-                    </Grid>
-                  ))}
-                </Grid>
-              </Box>
-            );
-          })}
-        </motion.div>
-
-        {/* Save Assessment Button */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6, mb: 4 }}>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Button
-              variant="contained"
-              size="large"
-              onClick={handleSaveAssessment}
-              disabled={loading || Object.keys(assessments).filter((id) => assessments[id]?.rating).length === 0}
-              startIcon={loading ? <MedicalIcon /> : <HospitalIcon />}
+            {/* Category Tabs */}
+            <Paper
+              elevation={0}
               sx={{
-                minWidth: 250,
-                py: 1.5,
-                px: 4,
-                fontSize: '1.1rem',
-                fontWeight: 700,
-                background: `linear-gradient(135deg, ${healthcareColors.primary} 0%, ${healthcareColors.secondary} 100%)`,
-                boxShadow: '0 4px 20px rgba(13, 71, 161, 0.3)',
-                '&:hover': {
-                  boxShadow: '0 6px 25px rgba(13, 71, 161, 0.4)',
-                },
-                '&:disabled': {
-                  background: 'rgba(0, 0, 0, 0.12)',
-                },
+                borderRadius: 3,
+                border: `1px solid ${healthcareColors.primary}15`,
+                overflow: 'hidden',
               }}
             >
-              {loading ? 'Processing Assessment...' : 'Complete Clinical Assessment'}
-            </Button>
-          </motion.div>
+              <Tabs
+                value={activeTab}
+                onChange={(e, newValue) => setActiveTab(newValue)}
+                variant="scrollable"
+                scrollButtons="auto"
+                sx={{
+                  borderBottom: `1px solid ${healthcareColors.primary}15`,
+                  px: 2,
+                  '& .MuiTab-root': {
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    fontSize: '0.9375rem',
+                    minHeight: 56,
+                  },
+                  '& .Mui-selected': {
+                    color: healthcareColors.primary,
+                  },
+                }}
+              >
+                {categories.map((category) => (
+                  <Tab key={category.value} label={category.label} />
+                ))}
+              </Tabs>
+
+              {/* Tab Content */}
+              <Box sx={{ p: 4 }}>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTab}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {categories.map((category, catIndex) => {
+                      if (catIndex !== activeTab) return null;
+
+                      const categorySkills = getSkillsByCategory(category.value);
+                      const categoryInfo = categoryMapping[category.value];
+
+                      if (categorySkills.length === 0) {
+                        return (
+                          <Box key={category.value} sx={{ textAlign: 'center', py: 8 }}>
+                            <Typography variant="body1" color="text.secondary">
+                              No skills found in this category
+                            </Typography>
+                          </Box>
+                        );
+                      }
+
+                      return (
+                        <Box key={category.value}>
+                          {/* Category Header */}
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              mb: 4,
+                              p: 3,
+                              borderRadius: 3,
+                              background: `linear-gradient(135deg, ${categoryInfo.color}10 0%, ${categoryInfo.color}05 100%)`,
+                              border: `1px solid ${categoryInfo.color}30`,
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                p: 1.5,
+                                borderRadius: 2,
+                                background: `linear-gradient(135deg, ${categoryInfo.color} 0%, ${categoryInfo.color}dd 100%)`,
+                                color: 'white',
+                                mr: 2.5,
+                                boxShadow: `0 4px 12px ${categoryInfo.color}40`,
+                              }}
+                            >
+                              {categoryInfo.icon}
+                            </Box>
+                            <Box sx={{ flexGrow: 1 }}>
+                              <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
+                                {categoryInfo.name}
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary">
+                                Assess {categorySkills.length} professional skills
+                              </Typography>
+                            </Box>
+                            <Chip
+                              label={`${categorySkills.length} Skills`}
+                              sx={{
+                                bgcolor: categoryInfo.color,
+                                color: 'white',
+                                fontWeight: 600,
+                                fontSize: '0.875rem',
+                                height: 32,
+                              }}
+                            />
+                          </Box>
+
+                          {/* Skills Grid */}
+                          <Grid container spacing={3}>
+                            {categorySkills.map((skill, index) => (
+                              <Grid item xs={12} md={6} key={skill._id}>
+                                <motion.div
+                                  initial={{ opacity: 0, y: 20 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: index * 0.05 }}
+                                >
+                                  <SkillTooltip skill={skill}>
+                                    <Paper
+                                      elevation={0}
+                                      sx={{
+                                        height: '100%',
+                                        borderRadius: 3,
+                                        border: `1px solid ${categoryInfo.color}20`,
+                                        transition: 'all 0.3s ease',
+                                        overflow: 'hidden',
+                                        '&:hover': {
+                                          transform: 'translateY(-4px)',
+                                          boxShadow: `0 8px 24px ${categoryInfo.color}20`,
+                                          borderColor: `${categoryInfo.color}40`,
+                                        },
+                                      }}
+                                    >
+                                      <Box
+                                        sx={{
+                                          height: 4,
+                                          background: `linear-gradient(90deg, ${categoryInfo.color} 0%, ${categoryInfo.color}80 100%)`,
+                                        }}
+                                      />
+                                      <CardContent sx={{ p: 3 }}>
+                                        {/* Skill Header */}
+                                        <Box sx={{ mb: 3 }}>
+                                          <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+                                            {skill.name}
+                                          </Typography>
+                                          <Chip
+                                            label={category.label}
+                                            size="small"
+                                            sx={{
+                                              bgcolor: `${categoryInfo.color}15`,
+                                              color: categoryInfo.color,
+                                              fontWeight: 600,
+                                              fontSize: '0.75rem',
+                                            }}
+                                          />
+                                        </Box>
+
+                                        {skill.description && (
+                                          <Typography
+                                            variant="body2"
+                                            color="text.secondary"
+                                            sx={{ mb: 3, lineHeight: 1.6 }}
+                                          >
+                                            {skill.description}
+                                          </Typography>
+                                        )}
+
+                                        <Divider sx={{ my: 3 }} />
+
+                                        {/* Proficiency Level Selector */}
+                                        <Box sx={{ mb: 3 }}>
+                                          <Typography
+                                            variant="subtitle2"
+                                            sx={{ fontWeight: 600, mb: 2 }}
+                                          >
+                                            Current Proficiency Level
+                                          </Typography>
+                                          <Box sx={{ px: 1 }}>
+                                            <Slider
+                                              value={assessments[skill._id]?.rating || 0}
+                                              onChange={(e, value) => handleProficiencyChange(skill._id, value)}
+                                              min={0}
+                                              max={5}
+                                              step={1}
+                                              marks={proficiencyLevels.map(p => ({
+                                                value: p.value,
+                                                label: '',
+                                              }))}
+                                              sx={{
+                                                '& .MuiSlider-thumb': {
+                                                  bgcolor: proficiencyColors[assessments[skill._id]?.rating] || '#94A3B8',
+                                                  width: 20,
+                                                  height: 20,
+                                                  '&:hover, &.Mui-focusVisible': {
+                                                    boxShadow: `0 0 0 8px ${proficiencyColors[assessments[skill._id]?.rating]}30`,
+                                                  },
+                                                },
+                                                '& .MuiSlider-track': {
+                                                  background: `linear-gradient(90deg, #94A3B8 0%, ${proficiencyColors[assessments[skill._id]?.rating] || '#94A3B8'} 100%)`,
+                                                  border: 'none',
+                                                  height: 6,
+                                                },
+                                                '& .MuiSlider-rail': {
+                                                  bgcolor: 'rgba(148, 163, 184, 0.2)',
+                                                  height: 6,
+                                                },
+                                                '& .MuiSlider-mark': {
+                                                  bgcolor: 'white',
+                                                  border: '2px solid rgba(148, 163, 184, 0.3)',
+                                                  width: 10,
+                                                  height: 10,
+                                                  borderRadius: '50%',
+                                                },
+                                              }}
+                                            />
+                                          </Box>
+                                          {assessments[skill._id]?.rating > 0 && (
+                                            <Box
+                                              sx={{
+                                                mt: 2,
+                                                p: 2,
+                                                borderRadius: 2,
+                                                bgcolor: `${proficiencyColors[assessments[skill._id]?.rating]}15`,
+                                              }}
+                                            >
+                                              <Typography
+                                                variant="body2"
+                                                sx={{
+                                                  fontWeight: 600,
+                                                  color: proficiencyColors[assessments[skill._id]?.rating],
+                                                }}
+                                              >
+                                                {proficiencyLevels[assessments[skill._id]?.rating - 1]?.label}
+                                              </Typography>
+                                              <Typography variant="caption" color="text.secondary">
+                                                {proficiencyLevels[assessments[skill._id]?.rating - 1]?.description}
+                                              </Typography>
+                                            </Box>
+                                          )}
+                                        </Box>
+
+                                        <Divider sx={{ my: 3 }} />
+
+                                        {/* Evidence Upload Section */}
+                                        <Box sx={{ mb: 3 }}>
+                                          <Typography
+                                            variant="subtitle2"
+                                            sx={{ fontWeight: 600, mb: 1.5 }}
+                                          >
+                                            Supporting Evidence (Optional)
+                                          </Typography>
+                                          <Button
+                                            variant="outlined"
+                                            size="small"
+                                            startIcon={<UploadIcon />}
+                                            fullWidth
+                                            sx={{
+                                              textTransform: 'none',
+                                              borderRadius: 2,
+                                              borderColor: `${categoryInfo.color}30`,
+                                              color: categoryInfo.color,
+                                              '&:hover': {
+                                                borderColor: categoryInfo.color,
+                                                bgcolor: `${categoryInfo.color}05`,
+                                              },
+                                            }}
+                                            onClick={() => {
+                                              // File upload logic would go here
+                                              const input = document.createElement('input');
+                                              input.type = 'file';
+                                              input.multiple = true;
+                                              input.onchange = (e) => handleEvidenceUpload(skill._id, Array.from(e.target.files));
+                                              input.click();
+                                            }}
+                                          >
+                                            Upload Certificates or Projects
+                                          </Button>
+                                          {assessments[skill._id]?.evidenceFiles?.length > 0 && (
+                                            <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                                              {assessments[skill._id].evidenceFiles.length} file(s) uploaded
+                                            </Typography>
+                                          )}
+                                        </Box>
+
+                                        <Divider sx={{ my: 3 }} />
+
+                                        {/* Target Goal Selector */}
+                                        <TextField
+                                          fullWidth
+                                          select
+                                          label="Target Proficiency Goal"
+                                          value={assessments[skill._id]?.goal || ''}
+                                          onChange={(e) => handleGoalChange(skill._id, e.target.value)}
+                                          size="small"
+                                          sx={{
+                                            '& .MuiOutlinedInput-root': {
+                                              borderRadius: 2,
+                                            },
+                                          }}
+                                        >
+                                          <MenuItem value="">No goal set</MenuItem>
+                                          <MenuItem value="beginner">Beginner</MenuItem>
+                                          <MenuItem value="intermediate">Intermediate</MenuItem>
+                                          <MenuItem value="advanced">Proficient</MenuItem>
+                                          <MenuItem value="expert">Expert</MenuItem>
+                                          <MenuItem value="master">Master</MenuItem>
+                                        </TextField>
+                                      </CardContent>
+                                    </Paper>
+                                  </SkillTooltip>
+                                </motion.div>
+                              </Grid>
+                            ))}
+                          </Grid>
+                        </Box>
+                      );
+                    })}
+                  </motion.div>
+                </AnimatePresence>
+              </Box>
+            </Paper>
+
+            {/* Save Assessment Button */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6, mb: 4 }}>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={handleSaveAssessment}
+                  disabled={loading || Object.keys(assessments).filter((id) => assessments[id]?.rating).length === 0}
+                  startIcon={loading ? <TrendingUpIcon /> : <CheckCircleIcon />}
+                  sx={{
+                    minWidth: 280,
+                    py: 2,
+                    px: 5,
+                    fontSize: '1.125rem',
+                    fontWeight: 700,
+                    borderRadius: 3,
+                    background: healthcareColors.gradientPrimary,
+                    boxShadow: shadows.colored.primary,
+                    textTransform: 'none',
+                    '&:hover': {
+                      boxShadow: '0 8px 32px rgba(30, 58, 95, 0.3)',
+                      transform: 'translateY(-2px)',
+                    },
+                    '&:disabled': {
+                      background: 'rgba(0, 0, 0, 0.12)',
+                    },
+                  }}
+                >
+                  {loading ? 'Saving Assessment...' : 'Save Skills Assessment'}
+                </Button>
+              </motion.div>
+            </Box>
+          </Container>
         </Box>
-      </Container>
+      </Box>
     </PageTransition>
   );
 };
