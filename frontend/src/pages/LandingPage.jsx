@@ -14,10 +14,10 @@ import {
   IconButton,
 } from '@mui/material';
 import {
-  LocalHospital as HospitalIcon,
-  MedicalServices as MedicalIcon,
-  HealthAndSafety as HealthIcon,
-  Psychology as PsychologyIcon,
+  Code as CodeIcon,
+  DataObject as DataIcon,
+  CloudQueue as CloudIcon,
+  AutoAwesome as AIIcon,
   Security as SecurityIcon,
   TrendingUp as TrendingIcon,
   Assessment as AssessmentIcon,
@@ -28,9 +28,11 @@ import {
   LinkedIn as LinkedInIcon,
   Twitter as TwitterIcon,
   GitHub as GitHubIcon,
+  Insights as InsightsIcon,
+  Rocket as RocketIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
-import { healthcareColors, specialtyGradients, glassmorphism } from '../theme';
+import { healthcareColors, glassmorphism } from '../theme';
 import { motion } from 'framer-motion';
 
 const LandingPage = () => {
@@ -52,82 +54,92 @@ const LandingPage = () => {
     }
   }, []);
 
-  const specialties = [
+  const specialtyCategories = [
     {
-      name: 'Health Informatics',
-      icon: <MedicalIcon sx={{ fontSize: 60 }} />,
-      description: 'Master health information systems, EHR management, and healthcare data analytics.',
-      gradient: specialtyGradients['Health Informatics'],
+      name: 'Software Engineering',
+      icon: <CodeIcon sx={{ fontSize: 60 }} />,
+      description: 'Master modern development frameworks, architecture patterns, and engineering best practices.',
+      gradient: 'linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%)',
     },
     {
-      name: 'Medical Devices',
-      icon: <HealthIcon sx={{ fontSize: 60 }} />,
-      description: 'Develop expertise in medical device technology, regulation, and innovation.',
-      gradient: specialtyGradients['Medical Devices'],
+      name: 'Data Science & AI',
+      icon: <AIIcon sx={{ fontSize: 60 }} />,
+      description: 'Build expertise in machine learning, data analytics, and artificial intelligence solutions.',
+      gradient: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
     },
     {
-      name: 'Telemedicine',
-      icon: <PsychologyIcon sx={{ fontSize: 60 }} />,
-      description: 'Learn remote healthcare delivery, telemedicine platforms, and virtual care solutions.',
-      gradient: specialtyGradients['Telemedicine'],
+      name: 'Cloud Architecture',
+      icon: <CloudIcon sx={{ fontSize: 60 }} />,
+      description: 'Design and implement scalable cloud infrastructure and distributed systems.',
+      gradient: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)',
     },
     {
-      name: 'Clinical Data',
-      icon: <AssessmentIcon sx={{ fontSize: 60 }} />,
-      description: 'Analyze clinical data, improve patient outcomes, and drive evidence-based care.',
-      gradient: specialtyGradients['Clinical Data'],
+      name: 'DevOps & Platform',
+      icon: <DataIcon sx={{ fontSize: 60 }} />,
+      description: 'Streamline deployment pipelines, automation, and infrastructure as code.',
+      gradient: 'linear-gradient(135deg, #2C5282 0%, #3B82F6 100%)',
     },
     {
-      name: 'Healthcare Cybersecurity',
+      name: 'Cybersecurity',
       icon: <SecurityIcon sx={{ fontSize: 60 }} />,
-      description: 'Protect patient data and ensure compliance with healthcare security standards.',
-      gradient: specialtyGradients['Healthcare Cybersecurity'],
+      description: 'Protect systems and data with advanced security practices and compliance frameworks.',
+      gradient: 'linear-gradient(135deg, #D4AF37 0%, #F0C850 100%)',
     },
   ];
 
   const features = [
     {
       icon: <TrendingIcon sx={{ fontSize: 48, color: 'white' }} />,
-      title: 'Track Your Progress',
-      description: 'Monitor your skill development with advanced analytics and visualizations.',
+      title: 'Real-Time Analytics',
+      description: 'Track skill development with advanced analytics dashboards and performance insights.',
     },
     {
       icon: <SchoolIcon sx={{ fontSize: 48, color: 'white' }} />,
-      title: 'Personalized Learning',
-      description: 'Get custom course recommendations tailored to your career goals.',
+      title: 'AI-Powered Learning',
+      description: 'Receive intelligent course recommendations tailored to your professional goals.',
     },
     {
       icon: <AssessmentIcon sx={{ fontSize: 48, color: 'white' }} />,
-      title: 'Gap Analysis',
-      description: 'Identify skill gaps and receive targeted recommendations to fill them.',
+      title: 'Smart Gap Analysis',
+      description: 'Identify skill gaps and get strategic recommendations to advance your career.',
     },
     {
       icon: <AwardIcon sx={{ fontSize: 48, color: 'white' }} />,
-      title: 'Earn Certifications',
-      description: 'Showcase your expertise with industry-recognized certifications.',
+      title: 'Industry Certifications',
+      description: 'Validate expertise with globally recognized professional certifications.',
+    },
+    {
+      icon: <InsightsIcon sx={{ fontSize: 48, color: 'white' }} />,
+      title: 'Career Insights',
+      description: 'Unlock data-driven career path recommendations based on market trends.',
+    },
+    {
+      icon: <RocketIcon sx={{ fontSize: 48, color: 'white' }} />,
+      title: 'Accelerated Growth',
+      description: 'Fast-track your professional development with personalized learning paths.',
     },
   ];
 
   const testimonials = [
     {
-      name: 'Dr. Sarah Johnson',
-      role: 'Health Informatics Specialist',
-      avatar: 'SJ',
-      content: 'This platform transformed my career! The personalized recommendations helped me transition into health informatics seamlessly.',
+      name: 'Sarah Mitchell',
+      role: 'Senior Software Engineer',
+      avatar: 'SM',
+      content: 'This platform transformed my career trajectory! The AI-powered recommendations helped me master cloud architecture and land my dream role.',
       rating: 5,
     },
     {
-      name: 'Michael Chen',
-      role: 'Medical Device Engineer',
+      name: 'Marcus Chen',
+      role: 'Lead Data Scientist',
       avatar: 'MC',
-      content: 'The skill tracking and gap analysis features are incredible. I\'ve gained 15 new certifications in just 6 months!',
+      content: 'The skill tracking and analytics are phenomenal. I\'ve gained 12 new certifications and doubled my expertise in just 6 months!',
       rating: 5,
     },
     {
-      name: 'Dr. Emily Rodriguez',
-      role: 'Telemedicine Coordinator',
+      name: 'Emily Rodriguez',
+      role: 'DevOps Architect',
       avatar: 'ER',
-      content: 'Best platform for healthcare tech professionals. The career path guidance is spot-on and helped me achieve my goals.',
+      content: 'Best platform for tech professionals. The personalized career insights helped me transition into DevOps leadership seamlessly.',
       rating: 5,
     },
   ];
@@ -182,8 +194,8 @@ const LandingPage = () => {
               transition={{ duration: 0.8 }}
             >
               <Chip
-                icon={<HospitalIcon />}
-                label="Next-Gen Healthcare Technology Platform"
+                icon={<RocketIcon />}
+                label="Next-Generation Skill Intelligence Platform"
                 sx={{
                   mb: 3,
                   bgcolor: 'rgba(255, 255, 255, 0.2)',
@@ -214,7 +226,7 @@ const LandingPage = () => {
                   textShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
                 }}
               >
-                Transform Your Healthcare Technology Career
+                Elevate Your Professional Journey
               </Typography>
             </motion.div>
             <motion.div
@@ -234,8 +246,8 @@ const LandingPage = () => {
                   mx: 'auto',
                 }}
               >
-                Master cutting-edge skills in Health Informatics, Medical Devices, Telemedicine, and more.
-                Track your progress, get personalized recommendations, and accelerate your career growth.
+                Master in-demand skills across Software Engineering, Data Science, Cloud Architecture, and more.
+                Track progress with AI-powered insights and accelerate your professional growth.
               </Typography>
             </motion.div>
             <motion.div
@@ -341,15 +353,15 @@ const LandingPage = () => {
               backgroundClip: 'text',
             }}
           >
-            Why Choose Our Platform?
+            Powerful Features for Modern Professionals
           </Typography>
           <Typography variant="h6" color="text.secondary" sx={{ maxWidth: '700px', mx: 'auto' }}>
-            Everything you need to advance your healthcare technology career in one powerful platform
+            Everything you need to accelerate your professional development in one intelligent platform
           </Typography>
         </Box>
         <Grid container spacing={4}>
           {features.map((feature, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
+            <Grid item xs={12} sm={6} md={4} key={index}>
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -423,14 +435,14 @@ const LandingPage = () => {
                 backgroundClip: 'text',
               }}
             >
-              Explore Healthcare Specialties
+              Explore Skill Categories
             </Typography>
             <Typography variant="h6" color="text.secondary" sx={{ maxWidth: '700px', mx: 'auto' }}>
-              Comprehensive skill development across all major healthcare technology domains
+              Comprehensive learning paths across all major technology domains
             </Typography>
           </Box>
           <Grid container spacing={4}>
-            {specialties.map((specialty, index) => (
+            {specialtyCategories.map((specialty, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -557,7 +569,7 @@ const LandingPage = () => {
             What Our Users Say
           </Typography>
           <Typography variant="h6" color="text.secondary" sx={{ maxWidth: '700px', mx: 'auto' }}>
-            Join thousands of healthcare professionals advancing their careers
+            Join thousands of professionals accelerating their careers with intelligent skill tracking
           </Typography>
         </Box>
         <Grid container spacing={4}>
@@ -660,7 +672,7 @@ const LandingPage = () => {
                   textShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
                 }}
               >
-                Ready to Transform Your Healthcare Career?
+                Ready to Accelerate Your Professional Growth?
               </Typography>
               <Typography
                 variant="h6"
@@ -672,8 +684,8 @@ const LandingPage = () => {
                   fontSize: { xs: '1rem', md: '1.25rem' },
                 }}
               >
-                Join thousands of healthcare professionals who are mastering new skills,
-                tracking their progress, and accelerating their careers with our intelligent platform.
+                Join thousands of professionals who are mastering new skills,
+                tracking their progress, and achieving career breakthroughs with our AI-powered platform.
               </Typography>
               {!isAuthenticated && (
                 <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -744,13 +756,13 @@ const LandingPage = () => {
           <Grid container spacing={4}>
             <Grid item xs={12} md={6}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <HospitalIcon sx={{ fontSize: 40, mr: 2 }} />
+                <RocketIcon sx={{ fontSize: 40, mr: 2 }} />
                 <Typography variant="h5" sx={{ fontWeight: 700 }}>
-                  Healthcare Skills Intelligence
+                  Skill Intelligence Platform
                 </Typography>
               </Box>
               <Typography variant="body2" sx={{ opacity: 0.8, mb: 3, lineHeight: 1.7 }}>
-                Empowering healthcare professionals to master technology skills and advance their careers
+                Empowering professionals to master in-demand skills and accelerate their careers
                 through intelligent tracking, personalized recommendations, and comprehensive learning paths.
               </Typography>
               <Box sx={{ display: 'flex', gap: 1 }}>
@@ -855,7 +867,7 @@ const LandingPage = () => {
             }}
           >
             <Typography variant="body2" sx={{ opacity: 0.6 }}>
-              © {new Date().getFullYear()} Healthcare Skills Intelligence Platform. All rights reserved.
+              © {new Date().getFullYear()} Skill Intelligence Platform. All rights reserved.
             </Typography>
           </Box>
         </Container>
