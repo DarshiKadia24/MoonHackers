@@ -1,12 +1,22 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Typography, Button, Paper } from '@mui/material';
+import { Box, Container, Typography, Button, Paper, alpha } from '@mui/material';
 import { ErrorOutline as ErrorIcon, Home as HomeIcon, ArrowBack as BackIcon } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { healthcareColors } from '../theme';
 
 const NotFound = () => {
   const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    // Check if there's a previous page in history
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      // Fallback to home page if no history
+      navigate('/');
+    }
+  };
 
   return (
     <Container maxWidth="md">
@@ -31,7 +41,7 @@ const NotFound = () => {
               p: 6,
               textAlign: 'center',
               borderRadius: 3,
-              background: `linear-gradient(135deg, ${healthcareColors.primary}15 0%, ${healthcareColors.secondary}15 100%)`,
+              background: `linear-gradient(135deg, ${alpha(healthcareColors.primary, 0.15)} 0%, ${alpha(healthcareColors.secondary, 0.15)} 100%)`,
             }}
           >
             <motion.div
@@ -90,7 +100,7 @@ const NotFound = () => {
                 variant="outlined"
                 color="primary"
                 startIcon={<BackIcon />}
-                onClick={() => navigate(-1)}
+                onClick={handleGoBack}
                 sx={{
                   px: 4,
                   py: 1.5,
