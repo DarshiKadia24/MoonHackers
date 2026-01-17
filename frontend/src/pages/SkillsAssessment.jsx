@@ -52,12 +52,14 @@ const categoryMapping = {
 
 // Proficiency level mapping (replacing medical terminology)
 const proficiencyLevels = [
-  { value: 1, label: 'Beginner', description: 'Getting started with fundamentals' },
-  { value: 2, label: 'Intermediate', description: 'Comfortable with core concepts' },
-  { value: 3, label: 'Proficient', description: 'Strong working knowledge' },
-  { value: 4, label: 'Expert', description: 'Advanced mastery and expertise' },
-  { value: 5, label: 'Master', description: 'Industry-leading proficiency' },
+  { value: 1, label: 'Beginner', description: 'Getting started with fundamentals', apiName: 'beginner' },
+  { value: 2, label: 'Intermediate', description: 'Comfortable with core concepts', apiName: 'intermediate' },
+  { value: 3, label: 'Proficient', description: 'Strong working knowledge', apiName: 'advanced' },
+  { value: 4, label: 'Expert', description: 'Advanced mastery and expertise', apiName: 'expert' },
+  { value: 5, label: 'Master', description: 'Industry-leading proficiency', apiName: 'master' },
 ];
+
+const MINIMUM_PROFICIENCY_THRESHOLD = 3; // Proficient level
 
 const proficiencyColors = {
   1: '#94A3B8',
@@ -146,11 +148,11 @@ const SkillsAssessment = () => {
     assessedSkills.forEach((skillId) => {
       const assessment = assessments[skillId];
       const skill = skills.find((s) => s._id === skillId);
-      if (skill && assessment.rating < 3) {
+      if (skill && assessment.rating < MINIMUM_PROFICIENCY_THRESHOLD) {
         gaps.push({
           skillName: skill.name,
           currentLevel: getProficiencyName(assessment.rating),
-          requiredLevel: 'Proficient',
+          requiredLevel: getProficiencyName(MINIMUM_PROFICIENCY_THRESHOLD),
         });
       }
     });
@@ -177,8 +179,8 @@ const SkillsAssessment = () => {
 
       for (const [skillId, assessment] of Object.entries(assessments)) {
         if (assessment.rating) {
-          const proficiencyLevelNames = ['beginner', 'intermediate', 'advanced', 'expert', 'master'];
-          const level = proficiencyLevelNames[assessment.rating - 1] || 'beginner';
+          const proficiencyLevel = proficiencyLevels.find(p => p.value === assessment.rating);
+          const level = proficiencyLevel?.apiName || 'beginner';
           const score = (assessment.rating / 5) * 100;
 
           const updateData = {
