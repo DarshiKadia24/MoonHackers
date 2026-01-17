@@ -218,7 +218,219 @@ const updateProgress = async (req, res) => {
   }
 };
 
+// @route   GET /api/progress/:userId/timeline
+// @desc    Get user progress timeline
+// @access  Public (can be protected later)
+const getProgressTimeline = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Verify user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Get all user skills with evidence
+    const userSkills = await UserSkill.find({ userId })
+      .populate('skillId', 'name category healthcareContext')
+      .sort({ createdAt: -1 });
+
+    // Build timeline from evidence and updates
+    const timeline = [];
+
+    userSkills.forEach((userSkill) => {
+      const skill = userSkill.skillId;
+
+      // Add skill acquisition event
+      timeline.push({
+        date: userSkill.createdAt,
+        type: 'skill_added',
+        skillId: skill?._id,
+        skillName: skill?.name,
+        category: skill?.category,
+        details: {
+          initialLevel: userSkill.proficiency?.level || 'beginner',
+          initialScore: userSkill.proficiency?.score || 0,
+        },
+      });
+
+      // Add evidence events
+      if (userSkill.evidence && userSkill.evidence.length > 0) {
+        userSkill.evidence.forEach((ev) => {
+          timeline.push({
+            date: ev.date,
+            type: 'evidence_added',
+            skillId: skill?._id,
+            skillName: skill?.name,
+            category: skill?.category,
+            details: {
+              evidenceType: ev.type,
+              itemId: ev.itemId,
+            },
+          });
+        });
+      }
+
+      // Add proficiency update event if updated
+      if (userSkill.updatedAt && userSkill.updatedAt > userSkill.createdAt) {
+        timeline.push({
+          date: userSkill.updatedAt,
+          type: 'proficiency_updated',
+          skillId: skill?._id,
+          skillName: skill?.name,
+          category: skill?.category,
+          details: {
+            currentLevel: userSkill.proficiency?.level,
+            currentScore: userSkill.proficiency?.score,
+          },
+        });
+      }
+
+      // Add goal set event
+      if (userSkill.goal && userSkill.goal.targetLevel) {
+        timeline.push({
+          date: userSkill.createdAt, // Assuming goal was set when skill was added
+          type: 'goal_set',
+          skillId: skill?._id,
+          skillName: skill?.name,
+          category: skill?.category,
+          details: {
+            targetLevel: userSkill.goal.targetLevel,
+            targetDate: userSkill.goal.targetDate,
+          },
+        });
+      }
+    });
+
+    // Sort timeline by date (most recent first)
+    timeline.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    res.json({
+      userId,
+      timeline,
+      stats: {
+        totalEvents: timeline.length,
+        skillsAdded: timeline.filter(e => e.type === 'skill_added').length,
+        evidenceAdded: timeline.filter(e => e.type === 'evidence_added').length,
+        proficiencyUpdates: timeline.filter(e => e.type === 'proficiency_updated').length,
+        goalsSet: timeline.filter(e => e.type === 'goal_set').length,
+      },
+    });
+  } catch (error) {
+    console.error('Get progress timeline error:', error);
+    if (error.name === 'CastError') {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// @route   GET /api/progress/:userId/by-category
+// @desc    Get user progress organized by category
+// @access  Public (can be protected later)
+const getProgressByCategory = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Verify user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Get all user skills with populated skill details
+    const userSkills = await UserSkill.find({ userId })
+      .populate('skillId', 'name category healthcareContext proficiencyLevels')
+      .sort({ createdAt: -1 });
+
+    // Organize by category
+    const categorizedProgress = {};
+
+    userSkills.forEach((userSkill) => {
+      const skill = userSkill.skillId;
+      if (!skill) return;
+
+      const category = skill.category || 'uncategorized';
+
+      if (!categorizedProgress[category]) {
+        categorizedProgress[category] = {
+          category,
+          skills: [],
+          stats: {
+            totalSkills: 0,
+            averageScore: 0,
+            totalScore: 0,
+            beginnerCount: 0,
+            intermediateCount: 0,
+            advancedCount: 0,
+            expertCount: 0,
+          },
+        };
+      }
+
+      // Add skill to category
+      categorizedProgress[category].skills.push({
+        skillId: skill._id,
+        skillName: skill.name,
+        proficiencyLevel: userSkill.proficiency?.level,
+        proficiencyScore: userSkill.proficiency?.score || 0,
+        evidenceCount: userSkill.evidence?.length || 0,
+        hasGoal: !!(userSkill.goal && userSkill.goal.targetLevel),
+        goal: userSkill.goal,
+        createdAt: userSkill.createdAt,
+        updatedAt: userSkill.updatedAt,
+      });
+
+      // Update stats
+      const stats = categorizedProgress[category].stats;
+      stats.totalSkills++;
+      stats.totalScore += userSkill.proficiency?.score || 0;
+
+      const level = userSkill.proficiency?.level;
+      if (level === 'beginner') stats.beginnerCount++;
+      else if (level === 'intermediate') stats.intermediateCount++;
+      else if (level === 'advanced') stats.advancedCount++;
+      else if (level === 'expert') stats.expertCount++;
+    });
+
+    // Calculate average scores for each category
+    Object.keys(categorizedProgress).forEach((category) => {
+      const stats = categorizedProgress[category].stats;
+      stats.averageScore = stats.totalSkills > 0
+        ? parseFloat((stats.totalScore / stats.totalSkills).toFixed(2))
+        : 0;
+    });
+
+    // Convert to array and sort by total skills
+    const categoriesArray = Object.values(categorizedProgress).sort(
+      (a, b) => b.stats.totalSkills - a.stats.totalSkills
+    );
+
+    res.json({
+      userId,
+      categorizedProgress: categoriesArray,
+      summary: {
+        totalCategories: categoriesArray.length,
+        totalSkills: userSkills.length,
+        categoriesWithMostSkills: categoriesArray.slice(0, 3).map(c => ({
+          category: c.category,
+          skillCount: c.stats.totalSkills,
+        })),
+      },
+    });
+  } catch (error) {
+    console.error('Get progress by category error:', error);
+    if (error.name === 'CastError') {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 module.exports = {
   getUserProgress,
   updateProgress,
+  getProgressTimeline,
+  getProgressByCategory,
 };

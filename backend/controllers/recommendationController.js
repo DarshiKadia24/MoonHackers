@@ -115,7 +115,84 @@ const getSpecialtyRecommendations = async (req, res) => {
   }
 };
 
+// @route   POST /api/recommendations/filter
+// @desc    Filter recommendations by criteria
+// @access  Public
+const filterRecommendations = async (req, res) => {
+  try {
+    const { userId, categories, specialty, minScore, maxScore, skillLevel } = req.body;
+
+    // Build filter for skills
+    const skillFilter = {};
+    if (categories && categories.length > 0) {
+      skillFilter.category = { $in: categories };
+    }
+
+    // Get all skills matching filter
+    const skills = await Skill.find(skillFilter);
+
+    // Get courses with filters
+    const courseFilter = {};
+    if (specialty) {
+      courseFilter.healthcareSpecialty = specialty;
+    }
+    const courses = await Course.find(courseFilter).limit(20);
+
+    // Get career paths with filters
+    const careerPathFilter = {};
+    if (specialty) {
+      careerPathFilter.healthcareSpecialty = specialty;
+    }
+    const careerPaths = await CareerPath.find(careerPathFilter)
+      .populate('requiredSkills.skillId', 'name category healthcareContext')
+      .limit(20);
+
+    // If userId provided, apply user-specific filtering
+    let filteredSkills = skills;
+    if (userId) {
+      const userSkills = await UserSkill.find({ userId });
+      const userSkillIds = userSkills.map(us => us.skillId?.toString());
+      
+      // If score/level filters are provided, show user's skills that match those criteria
+      // Otherwise, exclude skills user already has (recommend new skills)
+      if (minScore !== undefined || maxScore !== undefined || skillLevel) {
+        const relevantUserSkills = userSkills.filter(us => {
+          let matches = true;
+          if (minScore !== undefined && us.proficiency?.score < minScore) matches = false;
+          if (maxScore !== undefined && us.proficiency?.score > maxScore) matches = false;
+          if (skillLevel && us.proficiency?.level !== skillLevel) matches = false;
+          return matches;
+        });
+
+        const relevantSkillIds = relevantUserSkills.map(us => us.skillId?.toString());
+        filteredSkills = skills.filter(skill => relevantSkillIds.includes(skill._id.toString()));
+      } else {
+        // No score/level filters: recommend new skills user doesn't have
+        filteredSkills = skills.filter(skill => !userSkillIds.includes(skill._id.toString()));
+      }
+    }
+
+    res.json({
+      filters: { categories, specialty, minScore, maxScore, skillLevel },
+      recommendations: {
+        skills: filteredSkills.slice(0, 20),
+        courses,
+        careerPaths,
+      },
+      stats: {
+        skillsCount: filteredSkills.length,
+        coursesCount: courses.length,
+        careerPathsCount: careerPaths.length,
+      },
+    });
+  } catch (error) {
+    console.error('Filter recommendations error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 module.exports = {
   getUserRecommendations,
   getSpecialtyRecommendations,
+  filterRecommendations,
 };
