@@ -1,4 +1,4 @@
-// Comprehensive Healthcare Technology Skills (50+ skills with enhanced healthcare context)
+// Comprehensive Healthcare Technology Skills (53 skills with enhanced healthcare context)
 const comprehensiveHealthcareSkills = [
   // Clinical Skills (15 skills)
   {
@@ -735,6 +735,331 @@ const comprehensiveHealthcareSkills = [
           type: 'Project',
           title: 'Leadership Initiative',
           description: 'Led healthcare technology initiative',
+        },
+      ],
+    },
+  },
+  
+  // Additional Healthcare Technology Skills (17 skills)
+  {
+    name: 'Healthcare API Integration',
+    description: 'Integrating healthcare systems through APIs and web services',
+    category: 'Technical',
+    healthcareContext: {
+      specialty: 'Health Informatics',
+      importance: 8,
+      clinicalRelevance: 'Medium',
+      patientImpact: 'Moderate',
+      regulatoryImportance: 7,
+      evidenceExamples: [
+        {
+          type: 'Project',
+          title: 'Healthcare API Implementation',
+          description: 'Developed API integrations between EHR and third-party systems',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Medical Device Software Development',
+    description: 'Developing and maintaining software for medical devices',
+    category: 'Technical',
+    healthcareContext: {
+      specialty: 'Medical Devices',
+      importance: 9,
+      clinicalRelevance: 'High',
+      patientImpact: 'Life-Critical',
+      regulatoryImportance: 10,
+      evidenceExamples: [
+        {
+          type: 'Project',
+          title: 'Medical Device Software',
+          description: 'Developed FDA-compliant medical device software',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Healthcare Informatics',
+    description: 'Application of information technology and data science to improve healthcare delivery',
+    category: 'Technical',
+    healthcareContext: {
+      specialty: 'Health Informatics',
+      importance: 9,
+      clinicalRelevance: 'High',
+      patientImpact: 'Direct',
+      regulatoryImportance: 8,
+      evidenceExamples: [
+        {
+          type: 'Certification',
+          title: 'Health Informatics Certification',
+          description: 'Certified in healthcare informatics',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Medical Data Analysis',
+    description: 'Analyzing medical and clinical data to derive meaningful insights',
+    category: 'Analytical',
+    healthcareContext: {
+      specialty: 'Clinical Data',
+      importance: 9,
+      clinicalRelevance: 'High',
+      patientImpact: 'Direct',
+      regulatoryImportance: 7,
+      evidenceExamples: [
+        {
+          type: 'Project',
+          title: 'Medical Data Analysis Project',
+          description: 'Analyzed patient data to improve clinical outcomes',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Healthcare System Design',
+    description: 'Designing and architecting healthcare information systems and infrastructure',
+    category: 'Technical',
+    healthcareContext: {
+      specialty: 'Health Informatics',
+      importance: 8,
+      clinicalRelevance: 'High',
+      patientImpact: 'Moderate',
+      regulatoryImportance: 7,
+      evidenceExamples: [
+        {
+          type: 'Project',
+          title: 'Healthcare System Architecture',
+          description: 'Designed enterprise healthcare information system',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Remote Patient Monitoring',
+    description: 'Implementing systems for monitoring patients remotely',
+    category: 'Technical',
+    healthcareContext: {
+      specialty: 'Telemedicine',
+      importance: 9,
+      clinicalRelevance: 'High',
+      patientImpact: 'Direct',
+      regulatoryImportance: 7,
+      evidenceExamples: [
+        {
+          type: 'Project',
+          title: 'RPM System Implementation',
+          description: 'Deployed remote patient monitoring system',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Healthcare Blockchain',
+    description: 'Applying blockchain technology to healthcare data management',
+    category: 'Technical',
+    healthcareContext: {
+      specialty: 'Health Informatics',
+      importance: 6,
+      clinicalRelevance: 'Low',
+      patientImpact: 'Moderate',
+      regulatoryImportance: 6,
+      evidenceExamples: [
+        {
+          type: 'Research Paper',
+          title: 'Blockchain in Healthcare',
+          description: 'Research on blockchain applications in health data',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Medical Imaging Informatics',
+    description: 'Managing and analyzing medical imaging data using PACS and imaging systems',
+    category: 'Clinical',
+    healthcareContext: {
+      specialty: 'Clinical Data',
+      importance: 8,
+      clinicalRelevance: 'High',
+      patientImpact: 'Direct',
+      regulatoryImportance: 7,
+      evidenceExamples: [
+        {
+          type: 'Certification',
+          title: 'PACS Administrator Certification',
+          description: 'Certified in Picture Archiving and Communication Systems',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Healthcare Natural Language Processing',
+    description: 'Applying NLP to extract insights from clinical notes and medical texts',
+    category: 'Analytical',
+    healthcareContext: {
+      specialty: 'Clinical Data',
+      importance: 7,
+      clinicalRelevance: 'Medium',
+      patientImpact: 'Moderate',
+      regulatoryImportance: 5,
+      evidenceExamples: [
+        {
+          type: 'Research Paper',
+          title: 'Clinical NLP Research',
+          description: 'Published research on NLP for clinical documentation',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Healthcare Quality Improvement',
+    description: 'Implementing quality improvement initiatives in healthcare settings',
+    category: 'Analytical',
+    healthcareContext: {
+      specialty: 'General',
+      importance: 9,
+      clinicalRelevance: 'High',
+      patientImpact: 'Direct',
+      regulatoryImportance: 8,
+      evidenceExamples: [
+        {
+          type: 'Certification',
+          title: 'CPHQ Certification',
+          description: 'Certified Professional in Healthcare Quality',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Revenue Cycle Management',
+    description: 'Managing healthcare billing, coding, and revenue optimization',
+    category: 'Analytical',
+    healthcareContext: {
+      specialty: 'Health Informatics',
+      importance: 7,
+      clinicalRelevance: 'Low',
+      patientImpact: 'Moderate',
+      regulatoryImportance: 7,
+      evidenceExamples: [
+        {
+          type: 'Project',
+          title: 'Revenue Cycle Optimization',
+          description: 'Improved healthcare billing efficiency',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Healthcare Data Warehousing',
+    description: 'Building and managing data warehouses for healthcare analytics',
+    category: 'Technical',
+    healthcareContext: {
+      specialty: 'Clinical Data',
+      importance: 8,
+      clinicalRelevance: 'Medium',
+      patientImpact: 'Moderate',
+      regulatoryImportance: 6,
+      evidenceExamples: [
+        {
+          type: 'Project',
+          title: 'Healthcare Data Warehouse',
+          description: 'Designed and implemented enterprise data warehouse',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Genomic Data Analysis',
+    description: 'Analyzing genomic and genetic data for precision medicine',
+    category: 'Analytical',
+    healthcareContext: {
+      specialty: 'Clinical Data',
+      importance: 8,
+      clinicalRelevance: 'High',
+      patientImpact: 'Direct',
+      regulatoryImportance: 7,
+      evidenceExamples: [
+        {
+          type: 'Research Paper',
+          title: 'Genomics Research',
+          description: 'Published research on genomic data analysis',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Healthcare Simulation Systems',
+    description: 'Developing and managing healthcare training simulation systems',
+    category: 'Technical',
+    healthcareContext: {
+      specialty: 'Medical Devices',
+      importance: 7,
+      clinicalRelevance: 'Medium',
+      patientImpact: 'Moderate',
+      regulatoryImportance: 5,
+      evidenceExamples: [
+        {
+          type: 'Project',
+          title: 'Medical Simulation Platform',
+          description: 'Developed simulation system for medical training',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Healthcare Emergency Response Systems',
+    description: 'Managing emergency department information systems and workflows',
+    category: 'Clinical',
+    healthcareContext: {
+      specialty: 'Health Informatics',
+      importance: 9,
+      clinicalRelevance: 'Critical',
+      patientImpact: 'Life-Critical',
+      regulatoryImportance: 8,
+      evidenceExamples: [
+        {
+          type: 'Project',
+          title: 'ED System Implementation',
+          description: 'Implemented emergency department information system',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Patient Engagement Technologies',
+    description: 'Implementing technologies to improve patient engagement and activation',
+    category: 'Technical',
+    healthcareContext: {
+      specialty: 'Telemedicine',
+      importance: 8,
+      clinicalRelevance: 'High',
+      patientImpact: 'Direct',
+      regulatoryImportance: 6,
+      evidenceExamples: [
+        {
+          type: 'Project',
+          title: 'Patient Portal Implementation',
+          description: 'Deployed patient engagement portal',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Healthcare Data Governance',
+    description: 'Establishing policies and procedures for healthcare data management',
+    category: 'Regulatory',
+    healthcareContext: {
+      specialty: 'Health Informatics',
+      importance: 9,
+      clinicalRelevance: 'High',
+      patientImpact: 'Moderate',
+      regulatoryImportance: 9,
+      evidenceExamples: [
+        {
+          type: 'Certification',
+          title: 'Data Governance Certification',
+          description: 'Certified in healthcare data governance',
         },
       ],
     },
