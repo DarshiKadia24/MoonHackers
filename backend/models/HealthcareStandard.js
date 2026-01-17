@@ -49,11 +49,39 @@ const healthcareStandardSchema = new mongoose.Schema(
         },
       },
     ],
+    // Regulatory context
+    regulatoryBody: {
+      type: String,
+      trim: true, // e.g., "HHS", "FDA", "CMS"
+    },
+    effectiveDate: {
+      type: Date,
+    },
+    lastUpdated: {
+      type: Date,
+    },
+    mandatoryCompliance: {
+      type: Boolean,
+      default: false,
+    },
+    // Compliance verification
+    verificationMethod: {
+      type: String,
+      trim: true,
+    },
+    auditFrequency: {
+      type: String,
+      enum: ['Annual', 'Bi-Annual', 'Quarterly', 'Monthly', 'As Needed'],
+    },
   },
   {
     timestamps: true,
   }
 );
+
+// Index for efficient queries
+healthcareStandardSchema.index({ category: 1 });
+healthcareStandardSchema.index({ level: 1 });
 
 const HealthcareStandard = mongoose.model('HealthcareStandard', healthcareStandardSchema);
 

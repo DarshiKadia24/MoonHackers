@@ -73,11 +73,38 @@ const medicalRoleSchema = new mongoose.Schema(
         typicalDuration: String,
       },
     ],
+    // Healthcare-specific requirements
+    complianceRequirements: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'HealthcareStandard',
+      },
+    ],
+    patientInteractionLevel: {
+      type: String,
+      enum: ['None', 'Minimal', 'Moderate', 'Frequent', 'Constant'],
+      default: 'None',
+    },
+    clinicalEnvironment: {
+      type: Boolean,
+      default: false,
+    },
+    requiredLicenses: [
+      {
+        name: String,
+        state: String,
+        required: Boolean,
+      },
+    ],
   },
   {
     timestamps: true,
   }
 );
+
+// Index for efficient queries
+medicalRoleSchema.index({ category: 1 });
+// Note: title field already has unique index from schema definition
 
 const MedicalRole = mongoose.model('MedicalRole', medicalRoleSchema);
 

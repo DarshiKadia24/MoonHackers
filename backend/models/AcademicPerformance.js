@@ -103,6 +103,44 @@ const academicPerformanceSchema = new mongoose.Schema(
         },
       },
     ],
+    // Healthcare-focused academic tracking
+    healthcareCoursework: {
+      totalHealthcareCredits: {
+        type: Number,
+        default: 0,
+      },
+      healthcareGPA: {
+        type: Number,
+        min: 0,
+        max: 4.0,
+      },
+      clinicalHours: {
+        type: Number,
+        default: 0,
+      },
+      researchProjects: [
+        {
+          title: String,
+          description: String,
+          healthcareRelevance: {
+            type: String,
+            enum: ['High', 'Medium', 'Low', 'None'],
+          },
+          startDate: Date,
+          endDate: Date,
+        },
+      ],
+    },
+    // Healthcare certifications earned through coursework
+    academicCertifications: [
+      {
+        name: String,
+        issuer: String,
+        courseCode: String,
+        dateEarned: Date,
+        expiryDate: Date,
+      },
+    ],
   },
   {
     timestamps: true,
@@ -111,6 +149,7 @@ const academicPerformanceSchema = new mongoose.Schema(
 
 // Index for efficient queries
 academicPerformanceSchema.index({ userId: 1 });
+academicPerformanceSchema.index({ 'courses.healthcareRelevance': 1 });
 
 // Method to calculate GPA
 academicPerformanceSchema.methods.calculateGPA = function () {
