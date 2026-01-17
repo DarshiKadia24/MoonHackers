@@ -147,14 +147,14 @@ const filterRecommendations = async (req, res) => {
       .populate('requiredSkills.skillId', 'name category healthcareContext')
       .limit(20);
 
-    // If userId provided, exclude skills user already has
+    // If userId provided, apply user-specific filtering
     let filteredSkills = skills;
     if (userId) {
       const userSkills = await UserSkill.find({ userId });
       const userSkillIds = userSkills.map(us => us.skillId?.toString());
-      filteredSkills = skills.filter(skill => !userSkillIds.includes(skill._id.toString()));
-
-      // Filter by user's proficiency scores if requested
+      
+      // If score/level filters are provided, show user's skills that match those criteria
+      // Otherwise, exclude skills user already has (recommend new skills)
       if (minScore !== undefined || maxScore !== undefined || skillLevel) {
         const relevantUserSkills = userSkills.filter(us => {
           let matches = true;
@@ -166,6 +166,9 @@ const filterRecommendations = async (req, res) => {
 
         const relevantSkillIds = relevantUserSkills.map(us => us.skillId?.toString());
         filteredSkills = skills.filter(skill => relevantSkillIds.includes(skill._id.toString()));
+      } else {
+        // No score/level filters: recommend new skills user doesn't have
+        filteredSkills = skills.filter(skill => !userSkillIds.includes(skill._id.toString()));
       }
     }
 

@@ -163,7 +163,7 @@ const getGPA = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    let academic = await AcademicPerformance.findOne({ userId }).populate('courses.skillsGained', 'name category');
+    let academic = await AcademicPerformance.findOne({ userId });
 
     if (!academic) {
       return res.status(404).json({
