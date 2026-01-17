@@ -1,161 +1,68 @@
 import { authAPI } from '../services/api';
 
 /**
- * Auth Middleware for token validation and session management
+ * SIMPLIFIED Auth Middleware (Hackathon Mode)
+ * Token expiration & auto-logout DISABLED for development
  */
 
-// Token validation
+// Validate token with backend (simple check)
 export const validateToken = async () => {
   const token = localStorage.getItem('token');
-  
+
   if (!token) {
-    return { valid: false, error: 'No token found' };
+    return { valid: false };
   }
 
   try {
     const response = await authAPI.getMe();
     return { valid: true, user: response.data.user };
-  } catch (error) {
-    // Token is invalid or expired
-    return { valid: false, error: error.response?.data?.message || 'Token validation failed' };
+  } catch {
+    return { valid: false };
   }
 };
 
-// Check if token exists and is potentially expired
-export const isTokenExpired = () => {
-  const token = localStorage.getItem('token');
-  
-  if (!token) return true;
-  
-  try {
-    // Validate JWT format (header.payload.signature)
-    const parts = token.split('.');
-    if (parts.length !== 3) {
-      console.error('Invalid token format');
-      return true;
-    }
-    
-    // Decode JWT token to check expiration
-    const payload = JSON.parse(atob(parts[1]));
-    
-    // Validate payload has expiration
-    if (!payload.exp) {
-      console.error('Token missing expiration');
-      return true;
-    }
-    
-    const expirationTime = payload.exp * 1000; // Convert to milliseconds
-    const currentTime = Date.now();
-    
-    // Token is expired if current time is past expiration
-    return currentTime >= expirationTime;
-  } catch (error) {
-    // If we can't decode the token, assume it's invalid
-    console.error('Error decoding token:', error);
-    return true;
-  }
-};
+// Disabled expiration logic
+export const isTokenExpired = () => false;
+export const getTokenExpirationTime = () => 0;
+export const setupAutoLogout = () => null;
+export const clearAutoLogout = () => {};
 
-// Get time until token expiration in milliseconds
-export const getTokenExpirationTime = () => {
-  const token = localStorage.getItem('token');
-  
-  if (!token) return 0;
-  
-  try {
-    // Validate JWT format (header.payload.signature)
-    const parts = token.split('.');
-    if (parts.length !== 3) {
-      return 0;
-    }
-    
-    const payload = JSON.parse(atob(parts[1]));
-    
-    // Validate payload has expiration
-    if (!payload.exp) {
-      return 0;
-    }
-    
-    const expirationTime = payload.exp * 1000;
-    const currentTime = Date.now();
-    
-    return Math.max(0, expirationTime - currentTime);
-  } catch (error) {
-    console.error('Error decoding token expiration:', error);
-    return 0;
-  }
-};
-
-// Auto-logout on token expiration
-export const setupAutoLogout = (logoutCallback) => {
-  const timeUntilExpiration = getTokenExpirationTime();
-  
-  if (timeUntilExpiration > 0) {
-    // Set timeout to auto-logout when token expires
-    const timeoutId = setTimeout(() => {
-      console.log('Token expired, logging out...');
-      logoutCallback();
-    }, timeUntilExpiration);
-    
-    return timeoutId;
-  }
-  
-  return null;
-};
-
-// Clear auto-logout timeout
-export const clearAutoLogout = (timeoutId) => {
-  if (timeoutId) {
-    clearTimeout(timeoutId);
-  }
-};
-
-// Session management - check if user should stay logged in
+// Session restore
 export const shouldRestoreSession = () => {
   const token = localStorage.getItem('token');
   const user = localStorage.getItem('user');
-  
-  // Both token and user data must exist
-  if (!token || !user) {
-    return false;
-  }
-  
-  // Token must not be expired
-  if (isTokenExpired()) {
-    return false;
-  }
-  
-  return true;
+  return !!(token && user);
 };
 
-// Clear session data
+// Clear session
 export const clearSession = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
 };
 
-// Initialize session on app load
+// Initialize session
 export const initializeSession = async () => {
-  if (!shouldRestoreSession()) {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
     clearSession();
     return { authenticated: false };
   }
-  
-  // Validate token with backend
+
   const validation = await validateToken();
-  
+
   if (!validation.valid) {
     clearSession();
     return { authenticated: false };
   }
-  
-  return { 
-    authenticated: true, 
-    user: validation.user 
+
+  return {
+    authenticated: true,
+    user: validation.user,
   };
 };
 
-const authMiddleware = {
+export default {
   validateToken,
   isTokenExpired,
   getTokenExpirationTime,
@@ -165,5 +72,3 @@ const authMiddleware = {
   clearSession,
   initializeSession,
 };
-
-export default authMiddleware;
