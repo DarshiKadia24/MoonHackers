@@ -10,7 +10,8 @@ const PageTransition = ({ children }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    if (containerRef.current) {
+    const container = containerRef.current;
+    if (container) {
       setTimeout(() => {
         if (containerRef.current) {
           pageTransition.enter(containerRef.current);
@@ -19,8 +20,8 @@ const PageTransition = ({ children }) => {
     }
     
     return () => {
-      if (containerRef.current) {
-        pageTransition.exit(containerRef.current);
+      if (container) {
+        pageTransition.exit(container);
       }
     };
   }, []);

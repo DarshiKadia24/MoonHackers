@@ -13,8 +13,6 @@ import {
 } from '@mui/material';
 import {
   School as CourseIcon,
-  Build as ProjectIcon,
-  TrendingUp as TrendingUpIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
 import { recommendationsAPI } from '../services/api';
@@ -38,7 +36,7 @@ const Recommendations = () => {
     if (userId) {
       fetchRecommendations();
     }
-  }, [user]);
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchRecommendations = async () => {
     try {

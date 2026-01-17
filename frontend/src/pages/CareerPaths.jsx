@@ -55,7 +55,7 @@ const CareerPaths = () => {
   useEffect(() => {
     fetchCareerPaths();
     fetchUserSkills();
-  }, [user]);
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchCareerPaths = async () => {
     try {

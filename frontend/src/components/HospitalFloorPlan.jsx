@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Box, Typography, Paper, Chip } from '@mui/material';
 import {
-  LocalHospital as HospitalIcon,
   EmergencyRecording as EmergencyIcon,
   Healing as WardIcon,
   MedicalServices as SurgeryIcon,
   SupervisorAccount as LeadershipIcon,
 } from '@mui/icons-material';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { healthcareColors } from '../theme';
 
 const departmentConfig = {

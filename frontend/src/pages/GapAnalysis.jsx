@@ -5,7 +5,7 @@ import {
   Box,
   Grid,
   Card,
-  CardContent,
+  
   CircularProgress,
   Alert,
   Button,
@@ -19,14 +19,14 @@ import {
 import {
   MedicalServices as MedicalIcon,
   Warning as WarningIcon,
-  CheckCircle as CheckIcon,
+  
   Timeline as TimelineIcon,
   School as SchoolIcon,
 } from '@mui/icons-material';
-import { fadeIn, slideIn, stagger } from '../utils/animeHelper';
-import { useAuth } from '../context/AuthContext';
+import { slideIn, stagger } from '../utils/animeHelper';
+// // import { useAuth } from '../context/AuthContext';
 import { careerPathsAPI } from '../services/api';
-import { getUserId } from '../utils/userHelpers';
+// // import { getUserId } from '../utils/userHelpers';
 import PageTransition from '../components/PageTransition';
 import SkeletonLoader from '../components/SkeletonLoader';
 import { healthcareColors, glassmorphism } from '../theme';
@@ -51,7 +51,7 @@ ChartJS.register(
 );
 
 const GapAnalysis = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState(null);
@@ -118,7 +118,7 @@ const GapAnalysis = () => {
     if (selectedRoleId) {
       handleAnalyze();
     }
-  }, [selectedRoleId]);
+  }, [selectedRoleId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (headerRef.current) {

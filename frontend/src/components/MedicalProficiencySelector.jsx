@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Typography, Tooltip, Chip } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
-import { healthcareColors } from '../theme';
 
 const proficiencyLevels = [
   {
@@ -47,7 +46,7 @@ const proficiencyLevels = [
 ];
 
 const MedicalProficiencySelector = ({ value, onChange, skillName }) => {
-  const [hoveredLevel, setHoveredLevel] = useState(null);
+  // // const [hoveredLevel, setHoveredLevel] = useState(null);
 
   const handleLevelClick = (level) => {
     if (onChange) {
@@ -63,7 +62,7 @@ const MedicalProficiencySelector = ({ value, onChange, skillName }) => {
       <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
         {proficiencyLevels.map((proficiency) => {
           const isSelected = value === proficiency.level;
-          const isHovered = hoveredLevel === proficiency.level;
+          // const isHovered = hoveredLevel === proficiency.level;
 
           return (
             <Tooltip
@@ -79,8 +78,6 @@ const MedicalProficiencySelector = ({ value, onChange, skillName }) => {
               arrow
             >
               <motion.div
-                onHoverStart={() => setHoveredLevel(proficiency.level)}
-                onHoverEnd={() => setHoveredLevel(null)}
                 whileHover={{ scale: 1.1, y: -4 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => handleLevelClick(proficiency.level)}

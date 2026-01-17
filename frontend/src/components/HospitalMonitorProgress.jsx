@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Box } from '@mui/material';
-import { motion } from 'framer-motion';
+// // import { motion } from 'framer-motion';
 import { healthcareColors } from '../theme';
 
 const HospitalMonitorProgress = ({ value, height = 8, color = healthcareColors.primary }) => {

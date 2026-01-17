@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, Stepper, Step, StepLabel, StepContent, Chip, Paper } from '@mui/material';
 import { motion } from 'framer-motion';
-import { healthcareColors } from '../theme';
+// import { healthcareColors } from '../theme';
 
 const trainingStages = [
   {

@@ -1,24 +1,55 @@
 import { createTheme } from '@mui/material/styles';
 
-// Premium Healthcare Design System Colors
+// Premium Healthcare Design System Colors - Modern Palette
 export const healthcareColors = {
   primary: '#0d47a1', // Deep Blue
   secondary: '#00897b', // Medical Teal
+  purple: '#6200EA', // Modern Purple
+  pink: '#E91E63', // Accent Pink
   accent: '#d32f2f', // Alert Red
   background: '#fafafa', // Hospital White
-  cardGradient: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)',
+  backgroundDark: '#f5f7fa',
+  
+  // Modern Gradients
+  gradientPrimary: 'linear-gradient(135deg, #0d47a1 0%, #1976d2 100%)',
+  gradientSecondary: 'linear-gradient(135deg, #00897b 0%, #26a69a 100%)',
+  gradientPurple: 'linear-gradient(135deg, #6200EA 0%, #7c4dff 100%)',
+  gradientPink: 'linear-gradient(135deg, #E91E63 0%, #ec407a 100%)',
+  gradientHero: 'linear-gradient(135deg, #0d47a1 0%, #00897b 50%, #6200EA 100%)',
+  gradientCard: 'linear-gradient(135deg, rgba(13, 71, 161, 0.05) 0%, rgba(0, 137, 123, 0.05) 100%)',
+  
   light: '#e3f2fd',
   dark: '#1565c0',
+  
+  // Modern shadow colors
+  shadowPrimary: 'rgba(13, 71, 161, 0.2)',
+  shadowSecondary: 'rgba(0, 137, 123, 0.2)',
+  shadowPurple: 'rgba(98, 0, 234, 0.2)',
+  shadowPink: 'rgba(233, 30, 99, 0.2)',
 };
 
-// Healthcare specialty colors
+// Healthcare specialty colors - Enhanced with gradients
 export const specialtyColors = {
   'Health Informatics': '#0d47a1',
   'Medical Devices': '#00897b',
-  'Telemedicine': '#03a9f4',
+  'Telemedicine': '#6200EA',
   'Clinical Data': '#0277bd',
-  'Healthcare Cybersecurity': '#01579b',
+  'Healthcare Cybersecurity': '#E91E63',
   'General': '#0d47a1',
+};
+
+export const specialtyGradients = {
+  'Health Informatics': 'linear-gradient(135deg, #0d47a1 0%, #1976d2 100%)',
+  'Medical Devices': 'linear-gradient(135deg, #00897b 0%, #26a69a 100%)',
+  'Telemedicine': 'linear-gradient(135deg, #6200EA 0%, #7c4dff 100%)',
+  'Clinical Data': 'linear-gradient(135deg, #0277bd 0%, #039be5 100%)',
+  'Healthcare Cybersecurity': 'linear-gradient(135deg, #E91E63 0%, #ec407a 100%)',
+  'General': 'linear-gradient(135deg, #0d47a1 0%, #1976d2 100%)',
+};
+
+// Helper function to get specialty gradient
+export const getSpecialtyGradient = (specialty) => {
+  return specialtyGradients[specialty] || healthcareColors.gradientPrimary;
 };
 
 // Helper function to get specialty color
@@ -31,13 +62,27 @@ export const getSpecialtyBgColor = (specialty) => {
   return healthcareColors.light;
 };
 
-// Glassmorphism styles
+// Glassmorphism styles - Enhanced
 export const glassmorphism = {
-  background: 'rgba(255, 255, 255, 0.7)',
-  backdropFilter: 'blur(10px)',
-  WebkitBackdropFilter: 'blur(10px)',
-  border: '1px solid rgba(255, 255, 255, 0.3)',
-  boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+  background: 'rgba(255, 255, 255, 0.85)',
+  backdropFilter: 'blur(20px)',
+  WebkitBackdropFilter: 'blur(20px)',
+  border: '1px solid rgba(255, 255, 255, 0.5)',
+  boxShadow: '0 8px 32px 0 rgba(13, 71, 161, 0.15)',
+};
+
+// Modern shadow system
+export const shadows = {
+  sm: '0 2px 8px rgba(13, 71, 161, 0.08)',
+  md: '0 4px 16px rgba(13, 71, 161, 0.12)',
+  lg: '0 8px 24px rgba(13, 71, 161, 0.16)',
+  xl: '0 12px 32px rgba(13, 71, 161, 0.2)',
+  colored: {
+    primary: '0 8px 24px rgba(13, 71, 161, 0.3)',
+    secondary: '0 8px 24px rgba(0, 137, 123, 0.3)',
+    purple: '0 8px 24px rgba(98, 0, 234, 0.3)',
+    pink: '0 8px 24px rgba(233, 30, 99, 0.3)',
+  },
 };
 
 // Create premium theme
@@ -145,12 +190,31 @@ const theme = createTheme({
         root: {
           textTransform: 'none',
           borderRadius: 12,
-          padding: '12px 28px',
+          padding: '12px 32px',
           fontWeight: 600,
           fontSize: '0.9375rem',
-          boxShadow: '0 4px 12px rgba(13, 71, 161, 0.15)',
+          boxShadow: 'none',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           '&:hover': {
-            boxShadow: '0 6px 16px rgba(13, 71, 161, 0.25)',
+            transform: 'translateY(-2px)',
+            boxShadow: '0 8px 20px rgba(13, 71, 161, 0.25)',
+          },
+          '&:active': {
+            transform: 'translateY(0)',
+          },
+        },
+        containedPrimary: {
+          background: healthcareColors.gradientPrimary,
+          '&:hover': {
+            background: healthcareColors.gradientPrimary,
+            boxShadow: '0 8px 20px rgba(13, 71, 161, 0.35)',
+          },
+        },
+        containedSecondary: {
+          background: healthcareColors.gradientSecondary,
+          '&:hover': {
+            background: healthcareColors.gradientSecondary,
+            boxShadow: '0 8px 20px rgba(0, 137, 123, 0.35)',
           },
         },
       },
@@ -159,8 +223,13 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 20,
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          boxShadow: '0 4px 20px rgba(13, 71, 161, 0.1)',
+          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          border: '1px solid rgba(13, 71, 161, 0.08)',
+          '&:hover': {
+            transform: 'translateY(-4px)',
+            boxShadow: '0 12px 32px rgba(13, 71, 161, 0.18)',
+          },
         },
       },
     },
@@ -168,6 +237,16 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 20,
+          boxShadow: '0 2px 12px rgba(13, 71, 161, 0.08)',
+        },
+        elevation1: {
+          boxShadow: '0 2px 8px rgba(13, 71, 161, 0.08)',
+        },
+        elevation2: {
+          boxShadow: '0 4px 16px rgba(13, 71, 161, 0.1)',
+        },
+        elevation3: {
+          boxShadow: '0 6px 20px rgba(13, 71, 161, 0.12)',
         },
       },
     },
@@ -176,10 +255,37 @@ const theme = createTheme({
         root: {
           '& .MuiOutlinedInput-root': {
             borderRadius: 12,
+            transition: 'all 0.3s ease',
             '&:hover .MuiOutlinedInput-notchedOutline': {
               borderColor: healthcareColors.primary,
+              borderWidth: '2px',
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: healthcareColors.primary,
+              borderWidth: '2px',
+              boxShadow: '0 0 0 3px rgba(13, 71, 161, 0.1)',
             },
           },
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          fontWeight: 600,
+          transition: 'all 0.3s ease',
+          '&:hover': {
+            transform: 'scale(1.05)',
+          },
+        },
+      },
+    },
+    MuiAvatar: {
+      styleOverrides: {
+        root: {
+          border: '3px solid white',
+          boxShadow: '0 4px 12px rgba(13, 71, 161, 0.2)',
         },
       },
     },

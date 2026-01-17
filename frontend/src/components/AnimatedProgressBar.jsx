@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, LinearProgress, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 
 const AnimatedProgressBar = ({ value, label, color = '#0d47a1', height = 8 }) => {

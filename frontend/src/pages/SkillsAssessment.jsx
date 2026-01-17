@@ -3,7 +3,7 @@ import {
   Container,
   Typography,
   Box,
-  Card,
+  
   CardContent,
   TextField,
   Button,
@@ -16,7 +16,7 @@ import {
 import {
   LocalHospital as HospitalIcon,
   MedicalServices as MedicalIcon,
-  Healing as HealingIcon,
+  
   Favorite as HeartIcon,
   Psychology as BrainIcon,
   Security as SecurityIcon,
@@ -55,7 +55,7 @@ const SkillsAssessment = () => {
   const [assessments, setAssessments] = useState({});
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [summary, setSummary] = useState(null);
+  const [, setSummary] = useState(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [showStethoscope, setShowStethoscope] = useState(false);
   const [diagnosisReport, setDiagnosisReport] = useState(null);

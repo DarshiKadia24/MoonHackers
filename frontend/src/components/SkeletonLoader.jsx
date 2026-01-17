@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Skeleton } from '@mui/material';
+import { Skeleton } from '@mui/material';
 import { motion } from 'framer-motion';
 
 const SkeletonLoader = ({ variant = 'rectangular', width, height, count = 1 }) => {

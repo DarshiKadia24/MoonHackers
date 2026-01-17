@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import { Card, CardContent, Typography, Box, Chip, Button, IconButton } from '@mui/material';
 import {
   Flip as FlipIcon,
-  Work as WorkIcon,
   AttachMoney as MoneyIcon,
   School as SchoolIcon,
 } from '@mui/icons-material';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { glassmorphism, healthcareColors } from '../theme';
 import MedicalTrainingTimeline from './MedicalTrainingTimeline';
 import SurgicalPrecisionSkills from './SurgicalPrecisionSkills';

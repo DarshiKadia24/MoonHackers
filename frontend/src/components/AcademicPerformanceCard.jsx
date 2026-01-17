@@ -1,11 +1,11 @@
 import React from 'react';
 import { Card, CardContent, Typography, Box, Grid, Chip } from '@mui/material';
-import { School as SchoolIcon, TrendingUp as TrendingUpIcon } from '@mui/icons-material';
+import { School as SchoolIcon } from '@mui/icons-material';
 import { glassmorphism, healthcareColors } from '../theme';
 
 const AcademicPerformanceCard = ({ academicData, coursesCompleted }) => {
   const gpa = academicData?.cumulativeGPA || 0;
-  const currentGpa = academicData?.currentGPA || gpa;
+  // const currentGpa = academicData?.currentGPA || gpa;
   const courses = academicData?.courses || [];
   const recentCourses = courses.slice(0, 3);
 

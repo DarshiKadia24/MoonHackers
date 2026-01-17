@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Container, Grid, Toolbar, Typography, Button, Alert } from '@mui/material';
-import { Assessment as AssessmentIcon, School as SchoolIcon, Code as CodeIcon } from '@mui/icons-material';
+import { Assessment as AssessmentIcon, School as SchoolIcon } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
 import { progressAPI, recommendationsAPI, userSkillsAPI, academicAPI, projectsAPI, learningActivitiesAPI } from '../services/api';
 import { getUserId } from '../utils/userHelpers';
@@ -46,7 +46,7 @@ const Dashboard = () => {
     if (userId) {
       fetchDashboardData();
     }
-  }, [user]);
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!loading && containerRef.current) {

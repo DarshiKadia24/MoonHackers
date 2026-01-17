@@ -517,7 +517,7 @@ export const createTimeline = (animations = []) => {
   return tl;
 };
 
-export default {
+const animeHelper = {
   fadeIn,
   slideIn,
   scaleIn,
@@ -537,8 +537,9 @@ export default {
   glow,
   reveal,
   float,
-  staggerGrid,
   createTimeline,
   typeWriter,
   easings,
 };
+
+export default animeHelper;
