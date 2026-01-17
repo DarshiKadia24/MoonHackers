@@ -95,6 +95,53 @@ const projectSchema = new mongoose.Schema(
     ],
     // Learning outcomes
     learningOutcomes: [String],
+    // Healthcare-specific compliance and impact tracking
+    healthcareCompliance: {
+      hipaaCompliant: {
+        type: Boolean,
+        default: false,
+      },
+      fdaRegulated: {
+        type: Boolean,
+        default: false,
+      },
+      clinicalTrialCompliant: {
+        type: Boolean,
+        default: false,
+      },
+      complianceNotes: {
+        type: String,
+        trim: true,
+      },
+    },
+    patientImpact: {
+      impactLevel: {
+        type: String,
+        enum: ['None', 'Indirect', 'Moderate', 'Direct', 'Life-Critical'],
+        default: 'None',
+      },
+      impactDescription: {
+        type: String,
+        trim: true,
+      },
+      estimatedPatientsAffected: {
+        type: Number,
+        min: 0,
+      },
+    },
+    regulatoryCompliance: {
+      standardsFollowed: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'HealthcareStandard',
+        },
+      ],
+      complianceLevel: {
+        type: String,
+        enum: ['Not Applicable', 'Basic', 'Intermediate', 'Advanced', 'Full Compliance'],
+        default: 'Not Applicable',
+      },
+    },
   },
   {
     timestamps: true,

@@ -102,6 +102,36 @@ const learningActivitySchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Project',
     },
+    // Healthcare-specific learning context
+    healthcareDomain: {
+      type: String,
+      enum: ['Health Informatics', 'Medical Devices', 'Telemedicine', 'Clinical Data', 'Healthcare Cybersecurity', 'EHR Systems', 'Regulatory Compliance', 'Other'],
+    },
+    complianceRelated: {
+      isComplianceTraining: {
+        type: Boolean,
+        default: false,
+      },
+      relatedStandards: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'HealthcareStandard',
+        },
+      ],
+      certificateEarned: {
+        type: Boolean,
+        default: false,
+      },
+      certificateUrl: String,
+    },
+    clinicalContext: {
+      involvesPatientData: {
+        type: Boolean,
+        default: false,
+      },
+      clinicalApplication: String,
+      medicalSpecialty: String,
+    },
   },
   {
     timestamps: true,
@@ -113,6 +143,8 @@ learningActivitySchema.index({ userId: 1 });
 learningActivitySchema.index({ activityType: 1 });
 learningActivitySchema.index({ status: 1 });
 learningActivitySchema.index({ dateStarted: -1 });
+learningActivitySchema.index({ healthcareDomain: 1 });
+learningActivitySchema.index({ healthcareRelevance: 1 });
 
 // Method to calculate total learning time
 learningActivitySchema.methods.getTotalTime = function () {
