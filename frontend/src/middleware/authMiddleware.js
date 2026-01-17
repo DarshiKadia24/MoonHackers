@@ -28,8 +28,22 @@ export const isTokenExpired = () => {
   if (!token) return true;
   
   try {
+    // Validate JWT format (header.payload.signature)
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      console.error('Invalid token format');
+      return true;
+    }
+    
     // Decode JWT token to check expiration
-    const payload = JSON.parse(atob(token.split('.')[1]));
+    const payload = JSON.parse(atob(parts[1]));
+    
+    // Validate payload has expiration
+    if (!payload.exp) {
+      console.error('Token missing expiration');
+      return true;
+    }
+    
     const expirationTime = payload.exp * 1000; // Convert to milliseconds
     const currentTime = Date.now();
     
@@ -37,6 +51,7 @@ export const isTokenExpired = () => {
     return currentTime >= expirationTime;
   } catch (error) {
     // If we can't decode the token, assume it's invalid
+    console.error('Error decoding token:', error);
     return true;
   }
 };
@@ -48,12 +63,25 @@ export const getTokenExpirationTime = () => {
   if (!token) return 0;
   
   try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
+    // Validate JWT format (header.payload.signature)
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      return 0;
+    }
+    
+    const payload = JSON.parse(atob(parts[1]));
+    
+    // Validate payload has expiration
+    if (!payload.exp) {
+      return 0;
+    }
+    
     const expirationTime = payload.exp * 1000;
     const currentTime = Date.now();
     
     return Math.max(0, expirationTime - currentTime);
   } catch (error) {
+    console.error('Error decoding token expiration:', error);
     return 0;
   }
 };

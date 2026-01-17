@@ -25,6 +25,14 @@ export const AuthProvider = ({ children }) => {
   const [isInitialized, setIsInitialized] = useState(false);
   const autoLogoutTimerRef = useRef(null);
 
+  // Helper to setup auto-logout timer
+  const setupAutoLogoutTimer = () => {
+    if (autoLogoutTimerRef.current) {
+      clearAutoLogout(autoLogoutTimerRef.current);
+    }
+    autoLogoutTimerRef.current = setupAutoLogout(logout);
+  };
+
   // Load user session on mount
   const loadUser = async () => {
     setLoading(true);
@@ -39,10 +47,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('user', JSON.stringify(normalizedUser));
         
         // Setup auto-logout when token expires
-        if (autoLogoutTimerRef.current) {
-          clearAutoLogout(autoLogoutTimerRef.current);
-        }
-        autoLogoutTimerRef.current = setupAutoLogout(logout);
+        setupAutoLogoutTimer();
         
         return { success: true, user: normalizedUser };
       } else {
@@ -79,7 +84,6 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       setError(null);
-      setLoading(true);
       const response = await authAPI.register(userData);
       const { token, user } = response.data;
 
@@ -89,18 +93,13 @@ export const AuthProvider = ({ children }) => {
       setUser(normalizedUser);
 
       // Setup auto-logout timer
-      if (autoLogoutTimerRef.current) {
-        clearAutoLogout(autoLogoutTimerRef.current);
-      }
-      autoLogoutTimerRef.current = setupAutoLogout(logout);
+      setupAutoLogoutTimer();
 
       return { success: true, data: response.data };
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Registration failed';
       setError(errorMessage);
       return { success: false, error: errorMessage };
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -108,7 +107,6 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       setError(null);
-      setLoading(true);
       const response = await authAPI.login(credentials);
       const { token, user } = response.data;
 
@@ -124,10 +122,7 @@ export const AuthProvider = ({ children }) => {
       setUser(normalizedUser);
 
       // Setup auto-logout timer
-      if (autoLogoutTimerRef.current) {
-        clearAutoLogout(autoLogoutTimerRef.current);
-      }
-      autoLogoutTimerRef.current = setupAutoLogout(logout);
+      setupAutoLogoutTimer();
 
       return { success: true, data: response.data, user: normalizedUser };
     } catch (err) {
@@ -135,8 +130,6 @@ export const AuthProvider = ({ children }) => {
       const errorMessage = err.response?.data?.message || err.message || 'Login failed';
       setError(errorMessage);
       return { success: false, error: errorMessage };
-    } finally {
-      setLoading(false);
     }
   };
 

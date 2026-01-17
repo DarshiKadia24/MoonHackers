@@ -24,10 +24,10 @@ import GapAnalysis from './pages/GapAnalysis.jsx';
 function AppContent() {
   const location = useLocation();
   const isDashboard = location.pathname === '/dashboard';
-  const { loading, isInitialized } = useAuth();
+  const { isInitialized } = useAuth();
 
   // Show app-level loading spinner while auth is initializing
-  if (!isInitialized || loading) {
+  if (!isInitialized) {
     return (
       <Box
         sx={{
