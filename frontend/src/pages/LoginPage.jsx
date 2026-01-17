@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   Container,
   Paper,
@@ -34,6 +34,10 @@ const LoginPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get the return URL from location state, default to dashboard
+  const from = location.state?.from || '/dashboard';
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -87,7 +91,8 @@ const LoginPage = () => {
       const result = await login(formData);
 
       if (result.success && result.user) {
-        navigate('/dashboard', { replace: true });
+        // Navigate to the intended destination or dashboard
+        navigate(from, { replace: true });
       } else {
         setError(result.error || 'Login failed. Please check your credentials.');
       }

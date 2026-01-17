@@ -1,6 +1,12 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useRef } from 'react';
 import { authAPI } from '../services/api';
 import { normalizeUser } from '../utils/userHelpers';
+import { 
+  setupAutoLogout, 
+  clearAutoLogout, 
+  initializeSession,
+  clearSession 
+} from '../middleware/authMiddleware';
 
 const AuthContext = createContext();
 
@@ -16,39 +22,62 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const autoLogoutTimerRef = useRef(null);
 
-  // Check for existing token on mount
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
-
-    if (token && savedUser) {
-      try {
-        const parsedUser = JSON.parse(savedUser);
-        const normalizedUser = normalizeUser(parsedUser);
-        setUser(normalizedUser);
-        // Verify token is still valid
-        authAPI.getMe()
-          .then((response) => {
-            const updatedUser = normalizeUser(response.data.user);
-            setUser(updatedUser);
-            localStorage.setItem('user', JSON.stringify(updatedUser));
-          })
-          .catch(() => {
-            // Token invalid, clear storage
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            setUser(null);
-          })
-          .finally(() => setLoading(false));
-      } catch (err) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setLoading(false);
-      }
-    } else {
-      setLoading(false);
+  // Helper to setup auto-logout timer
+  const setupAutoLogoutTimer = () => {
+    if (autoLogoutTimerRef.current) {
+      clearAutoLogout(autoLogoutTimerRef.current);
     }
+    autoLogoutTimerRef.current = setupAutoLogout(logout);
+  };
+
+  // Load user session on mount
+  const loadUser = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const session = await initializeSession();
+      
+      if (session.authenticated && session.user) {
+        const normalizedUser = normalizeUser(session.user);
+        setUser(normalizedUser);
+        localStorage.setItem('user', JSON.stringify(normalizedUser));
+        
+        // Setup auto-logout when token expires
+        setupAutoLogoutTimer();
+        
+        return { success: true, user: normalizedUser };
+      } else {
+        clearSession();
+        setUser(null);
+        return { success: false, error: 'No valid session found' };
+      }
+    } catch (err) {
+      console.error('Load user error:', err);
+      const errorMessage = err.response?.data?.message || 'Failed to load user session';
+      setError(errorMessage);
+      clearSession();
+      setUser(null);
+      return { success: false, error: errorMessage };
+    } finally {
+      setLoading(false);
+      setIsInitialized(true);
+    }
+  };
+
+  // Initialize auth on mount
+  useEffect(() => {
+    loadUser();
+    
+    // Cleanup auto-logout timer on unmount
+    return () => {
+      if (autoLogoutTimerRef.current) {
+        clearAutoLogout(autoLogoutTimerRef.current);
+      }
+    };
   }, []);
 
   // Register function
@@ -62,6 +91,9 @@ export const AuthProvider = ({ children }) => {
       const normalizedUser = normalizeUser(user);
       localStorage.setItem('user', JSON.stringify(normalizedUser));
       setUser(normalizedUser);
+
+      // Setup auto-logout timer
+      setupAutoLogoutTimer();
 
       return { success: true, data: response.data };
     } catch (err) {
@@ -89,6 +121,9 @@ export const AuthProvider = ({ children }) => {
       // Update state synchronously
       setUser(normalizedUser);
 
+      // Setup auto-logout timer
+      setupAutoLogoutTimer();
+
       return { success: true, data: response.data, user: normalizedUser };
     } catch (err) {
       console.error('Login error:', err);
@@ -100,8 +135,13 @@ export const AuthProvider = ({ children }) => {
 
   // Logout function
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    // Clear auto-logout timer
+    if (autoLogoutTimerRef.current) {
+      clearAutoLogout(autoLogoutTimerRef.current);
+      autoLogoutTimerRef.current = null;
+    }
+    
+    clearSession();
     setUser(null);
     setError(null);
   };
@@ -113,14 +153,33 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('user', JSON.stringify(normalizedUser));
   };
 
+  // Refresh user data from server
+  const refreshUser = async () => {
+    try {
+      setError(null);
+      const response = await authAPI.getMe();
+      const normalizedUser = normalizeUser(response.data.user);
+      setUser(normalizedUser);
+      localStorage.setItem('user', JSON.stringify(normalizedUser));
+      return { success: true, user: normalizedUser };
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || 'Failed to refresh user data';
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  };
+
   const value = {
     user,
     loading,
     error,
+    isInitialized,
     register,
     login,
     logout,
     updateUser,
+    loadUser,
+    refreshUser,
     isAuthenticated: !!user,
   };
 
