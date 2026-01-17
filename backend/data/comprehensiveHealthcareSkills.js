@@ -740,7 +740,7 @@ const comprehensiveHealthcareSkills = [
     },
   },
   
-  // Additional Healthcare Technology Skills (15 skills)
+  // Additional Healthcare Technology Skills (17 skills)
   {
     name: 'Healthcare API Integration',
     description: 'Integrating healthcare systems through APIs and web services',
@@ -775,25 +775,6 @@ const comprehensiveHealthcareSkills = [
           type: 'Project',
           title: 'Medical Device Software',
           description: 'Developed FDA-compliant medical device software',
-        },
-      ],
-    },
-  },
-  {
-    name: 'Healthcare Cloud Computing',
-    description: 'Implementing and managing cloud solutions for healthcare',
-    category: 'Technical',
-    healthcareContext: {
-      specialty: 'Health Informatics',
-      importance: 8,
-      clinicalRelevance: 'Medium',
-      patientImpact: 'Moderate',
-      regulatoryImportance: 8,
-      evidenceExamples: [
-        {
-          type: 'Certification',
-          title: 'AWS Healthcare Competency',
-          description: 'AWS certification for healthcare workloads',
         },
       ],
     },
