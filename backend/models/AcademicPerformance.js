@@ -122,7 +122,10 @@ const academicPerformanceSchema = new mongoose.Schema(
         {
           title: String,
           description: String,
-          healthcareRelevance: String,
+          healthcareRelevance: {
+            type: String,
+            enum: ['High', 'Medium', 'Low', 'None'],
+          },
           startDate: Date,
           endDate: Date,
         },
