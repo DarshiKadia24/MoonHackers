@@ -13,6 +13,8 @@ import {
   IconButton,
   Tabs,
   Tab,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import {
   TrendingUp as TrendingUpIcon,
@@ -48,6 +50,7 @@ const CareerPaths = () => {
   const [userSkills, setUserSkills] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   useEffect(() => {
     fetchCareerPaths();
@@ -94,7 +97,7 @@ const CareerPaths = () => {
   };
 
   const calculateReadiness = (career) => {
-    if (!career.requiredSkills || career.requiredSkills.length === 0) return 100;
+    if (!career.requiredSkills || career.requiredSkills.length === 0) return 0;
 
     let totalRequired = 0;
     let userMet = 0;
@@ -786,7 +789,11 @@ const CareerPaths = () => {
                               fullWidth
                               variant="contained"
                               onClick={() => {
-                                alert('Career goal set! Start building your skills towards this role.');
+                                setSnackbar({
+                                  open: true,
+                                  message: `${selectedCareer.title} set as your career goal! Start building your skills towards this role.`,
+                                  severity: 'success'
+                                });
                                 setSelectedCareer(null);
                               }}
                               sx={{
@@ -811,6 +818,29 @@ const CareerPaths = () => {
                   </motion.div>
                 )}
               </AnimatePresence>
+
+              {/* Success Snackbar */}
+              <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={() => setSnackbar({ ...snackbar, open: false })}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              >
+                <Alert
+                  onClose={() => setSnackbar({ ...snackbar, open: false })}
+                  severity={snackbar.severity}
+                  sx={{
+                    width: '100%',
+                    borderRadius: 2,
+                    boxShadow: shadows.lg,
+                    '& .MuiAlert-icon': {
+                      fontSize: 24,
+                    },
+                  }}
+                >
+                  {snackbar.message}
+                </Alert>
+              </Snackbar>
             </Container>
           </Box>
         </Box>
