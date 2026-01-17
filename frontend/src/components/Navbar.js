@@ -17,12 +17,12 @@ import {
 } from '@mui/material';
 import {
   Menu as MenuIcon,
-  LocalHospital as LogoIcon,
+  Code as LogoIcon,
   Dashboard as DashboardIcon,
   Person as PersonIcon,
-  School as SkillsIcon,
+  Assessment as SkillsIcon,
   TrendingUp as CareerIcon,
-  Recommend as RecommendIcon,
+  Lightbulb as RecommendIcon,
   Logout as LogoutIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
@@ -60,7 +60,7 @@ const Navbar = () => {
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center', pt: 2 }}>
       <Typography variant="h6" sx={{ my: 2, fontWeight: 700, color: 'primary.main' }}>
         <LogoIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-        Healthcare Skills
+        Skill Intelligence
       </Typography>
       <List>
         {navLinks.map((link) => (
@@ -94,10 +94,10 @@ const Navbar = () => {
         elevation={0}
         sx={{
           ...glassmorphism,
-          background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(13, 71, 161, 0.1)',
-          boxShadow: '0 4px 20px rgba(13, 71, 161, 0.08)',
+          background: 'rgba(255, 255, 255, 0.98)',
+          backdropFilter: 'blur(16px)',
+          borderBottom: '1px solid rgba(30, 58, 95, 0.08)',
+          boxShadow: '0 2px 8px rgba(30, 58, 95, 0.04)',
         }}
       >
         <Toolbar sx={{ py: 1 }}>
@@ -107,7 +107,6 @@ const Navbar = () => {
                 fontSize: 32,
                 color: 'primary.main',
                 mr: 1.5,
-                animation: 'pulse 2s ease-in-out infinite',
               }}
             />
             <Typography
@@ -124,7 +123,7 @@ const Navbar = () => {
                 fontSize: { xs: '1rem', sm: '1.25rem' },
               }}
             >
-              Healthcare Skills Intelligence
+              Skill Intelligence
             </Typography>
           </Box>
           {isMobile ? (
@@ -149,10 +148,10 @@ const Navbar = () => {
                     fontWeight: 600,
                     px: 2,
                     borderRadius: 2,
-                    transition: 'all 0.3s ease',
+                    transition: 'all 0.25s ease',
                     '&:hover': {
                       background: healthcareColors.gradientCard,
-                      transform: 'translateY(-2px)',
+                      transform: 'translateY(-1px)',
                     },
                   }}
                 >
@@ -170,12 +169,12 @@ const Navbar = () => {
                     borderRadius: 2,
                     borderColor: 'primary.main',
                     color: 'primary.main',
-                    transition: 'all 0.3s ease',
+                    transition: 'all 0.25s ease',
                     '&:hover': {
                       background: healthcareColors.gradientPrimary,
                       color: 'white',
                       borderColor: 'transparent',
-                      transform: 'translateY(-2px)',
+                      transform: 'translateY(-1px)',
                     },
                   }}
                 >
@@ -191,7 +190,7 @@ const Navbar = () => {
         open={mobileOpen}
         onClose={handleDrawerToggle}
         ModalProps={{
-          keepMounted: true, // Better mobile performance
+          keepMounted: true,
         }}
         sx={{
           display: { xs: 'block', md: 'none' },
