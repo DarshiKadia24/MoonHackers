@@ -30,20 +30,20 @@ export const healthcareColors = {
 
 // Specialty colors - Premium palette
 export const specialtyColors = {
-  'Health Informatics': '#1E3A5F',
-  'Medical Devices': '#6366F1',
-  'Telemedicine': '#8B5CF6',
-  'Clinical Data': '#2C5282',
-  'Healthcare Cybersecurity': '#D4AF37',
+  'Software Engineering': '#1E3A5F',
+  'Data Science & AI': '#6366F1',
+  'Cloud Architecture': '#8B5CF6',
+  'DevOps & Platform': '#2C5282',
+  'Cybersecurity': '#D4AF37',
   'General': '#1E3A5F',
 };
 
 export const specialtyGradients = {
-  'Health Informatics': 'linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%)',
-  'Medical Devices': 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
-  'Telemedicine': 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)',
-  'Clinical Data': 'linear-gradient(135deg, #2C5282 0%, #3B82F6 100%)',
-  'Healthcare Cybersecurity': 'linear-gradient(135deg, #D4AF37 0%, #F0C850 100%)',
+  'Software Engineering': 'linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%)',
+  'Data Science & AI': 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
+  'Cloud Architecture': 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)',
+  'DevOps & Platform': 'linear-gradient(135deg, #2C5282 0%, #3B82F6 100%)',
+  'Cybersecurity': 'linear-gradient(135deg, #D4AF37 0%, #F0C850 100%)',
   'General': 'linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%)',
 };
 
