@@ -62,7 +62,7 @@ export const initializeSession = async () => {
   };
 };
 
-export default {
+const authMiddleware = {
   validateToken,
   isTokenExpired,
   getTokenExpirationTime,
@@ -72,3 +72,5 @@ export default {
   clearSession,
   initializeSession,
 };
+
+export default authMiddleware;

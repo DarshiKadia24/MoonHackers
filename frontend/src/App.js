@@ -20,6 +20,7 @@ import SkillsAssessment from './pages/SkillsAssessment.jsx';
 import CareerPaths from './pages/CareerPaths.jsx';
 import Recommendations from './pages/Recommendations.jsx';
 import GapAnalysis from './pages/GapAnalysis.jsx';
+import NotFound from './pages/NotFound.jsx';
 
 function AppContent() {
   const location = useLocation();
@@ -106,6 +107,9 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
+
+          {/* 404 Fallback Route */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>
     </div>
