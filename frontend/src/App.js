@@ -10,6 +10,9 @@ import ErrorBoundary from './components/ErrorBoundary';
 import Navbar from './components/Navbar';
 import theme from './theme';
 
+// Layouts
+import DashboardLayout from './layouts/DashboardLayout';
+
 // Pages
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
@@ -25,7 +28,6 @@ import NotFound from './pages/NotFound.jsx';
 
 function AppContent() {
   const location = useLocation();
-  const isDashboard = location.pathname === '/dashboard';
   const { isInitialized } = useAuth();
 
   // Show app-level loading spinner while auth is initializing
@@ -48,10 +50,14 @@ function AppContent() {
       </Box>
     );
   }
+
+  // Check if current path is a public route (no navbar needed for login/register)
+  const isPublicAuthPage = location.pathname === '/login' || location.pathname === '/register';
   
   return (
     <div className="App">
-      {!isDashboard && <Navbar />}
+      {/* Only show Navbar on Landing Page */}
+      {location.pathname === '/' && <Navbar />}
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           {/* Public routes */}
@@ -59,63 +65,23 @@ function AppContent() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
-          {/* Protected routes */}
+          {/* Protected routes with DashboardLayout */}
           <Route
-            path="/dashboard"
+            path="/"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <DashboardLayout />
               </ProtectedRoute>
             }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/skills"
-            element={
-              <ProtectedRoute>
-                <SkillsAssessment />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/career-paths"
-            element={
-              <ProtectedRoute>
-                <CareerPaths />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/recommendations"
-            element={
-              <ProtectedRoute>
-                <Recommendations />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/gap-analysis"
-            element={
-              <ProtectedRoute>
-                <GapAnalysis />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/course-recommendations"
-            element={
-              <ProtectedRoute>
-                <CourseRecommendations />
-              </ProtectedRoute>
-            }
-          />
+          >
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="skills" element={<SkillsAssessment />} />
+            <Route path="career-paths" element={<CareerPaths />} />
+            <Route path="recommendations" element={<Recommendations />} />
+            <Route path="gap-analysis" element={<GapAnalysis />} />
+            <Route path="course-recommendations" element={<CourseRecommendations />} />
+          </Route>
 
           {/* 404 Fallback Route */}
           <Route path="*" element={<NotFound />} />
