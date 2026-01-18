@@ -20,6 +20,7 @@ import SkillsAssessment from './pages/SkillsAssessment.jsx';
 import CareerPaths from './pages/CareerPaths.jsx';
 import Recommendations from './pages/Recommendations.jsx';
 import GapAnalysis from './pages/GapAnalysis.jsx';
+import CourseRecommendations from './pages/CourseRecommendations.jsx';
 import NotFound from './pages/NotFound.jsx';
 
 function AppContent() {
@@ -104,6 +105,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <GapAnalysis />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/course-recommendations"
+            element={
+              <ProtectedRoute>
+                <CourseRecommendations />
               </ProtectedRoute>
             }
           />

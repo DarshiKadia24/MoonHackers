@@ -9,51 +9,42 @@ import {
   CardActions,
   Button,
   Chip,
-  CircularProgress,
   Alert,
   Tabs,
   Tab,
-  Rating,
-  LinearProgress,
 } from '@mui/material';
 import {
   School as SchoolIcon,
-  Star as StarIcon,
   AccessTime as TimeIcon,
   AttachMoney as MoneyIcon,
-  CheckCircle as CheckIcon,
   Launch as LaunchIcon,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../context/AuthContext';
 import { analysisAPI, careerPathsAPI } from '../services/api';
 import PageTransition from '../components/PageTransition';
 import SkeletonLoader from '../components/SkeletonLoader';
 import { healthcareColors, glassmorphism } from '../theme';
 
 const CourseRecommendations = () => {
-  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [recommendations, setRecommendations] = useState(null);
-  const [careerPaths, setCareerPaths] = useState([]);
   const [selectedRoleId, setSelectedRoleId] = useState(null);
   const [activeTab, setActiveTab] = useState(0);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchCareerPaths();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (selectedRoleId) {
       fetchRecommendations();
     }
-  }, [selectedRoleId]);
+  }, [selectedRoleId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchCareerPaths = async () => {
     try {
       const response = await careerPathsAPI.getAllCareerPaths();
-      setCareerPaths(response.data.careerPaths || []);
       if (response.data.careerPaths && response.data.careerPaths.length > 0) {
         setSelectedRoleId(response.data.careerPaths[0]._id);
       }

@@ -13,3 +13,6 @@ dist/
 
 # Cache
 .cache/
+
+# macOS
+.DS_Store
