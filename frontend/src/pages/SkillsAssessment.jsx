@@ -37,8 +37,6 @@ import PageTransition from '../components/PageTransition';
 import ConfettiCelebration from '../components/ConfettiCelebration';
 import SkeletonLoader from '../components/SkeletonLoader';
 import SkillTooltip from '../components/SkillTooltip';
-import PremiumSidebar from '../components/PremiumSidebar';
-import PremiumTopBar from '../components/PremiumTopBar';
 import { healthcareColors, shadows } from '../theme';
 
 // Professional category mapping
@@ -79,7 +77,6 @@ const SkillsAssessment = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [skillGaps, setSkillGaps] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const categories = [
     { label: 'Core Technical Skills', value: 'Clinical' },
@@ -253,34 +250,23 @@ const SkillsAssessment = () => {
   if (loading && skills.length === 0) {
     return (
       <PageTransition>
-        <Box sx={{ display: 'flex', height: '100vh' }}>
-          <PremiumSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-          <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-            <PremiumTopBar onMenuClick={() => setSidebarOpen(true)} />
-            <Container maxWidth="lg" sx={{ mt: 12, mb: 4 }}>
-              <Box sx={{ textAlign: 'center', py: 8 }}>
-                <Typography variant="h6" sx={{ mt: 3, color: 'text.secondary' }}>
-                  Loading skill assessment...
-                </Typography>
-                <Box sx={{ mt: 4 }}>
-                  <SkeletonLoader variant="rectangular" width="100%" height={200} count={3} />
-                </Box>
-              </Box>
-            </Container>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Box sx={{ textAlign: 'center', py: 8 }}>
+            <Typography variant="h6" sx={{ mt: 3, color: 'text.secondary' }}>
+              Loading skill assessment...
+            </Typography>
+            <Box sx={{ mt: 4 }}>
+              <SkeletonLoader variant="rectangular" width="100%" height={200} count={3} />
+            </Box>
           </Box>
-        </Box>
+        </Container>
       </PageTransition>
     );
   }
 
   return (
     <PageTransition>
-      <Box sx={{ display: 'flex', height: '100vh' }}>
-        <PremiumSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
-          <PremiumTopBar onMenuClick={() => setSidebarOpen(true)} />
-          
-          <Container maxWidth="lg" sx={{ mt: 12, mb: 4, flexGrow: 1 }}>
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4, flexGrow: 1 }}>
             <ConfettiCelebration trigger={showConfetti} onComplete={() => setShowConfetti(false)} />
 
             {/* Premium Header */}
@@ -804,10 +790,8 @@ const SkillsAssessment = () => {
               </motion.div>
             </Box>
           </Container>
-        </Box>
-      </Box>
-    </PageTransition>
-  );
-};
-
-export default SkillsAssessment;
+        </PageTransition>
+      );
+    };
+    
+    export default SkillsAssessment;

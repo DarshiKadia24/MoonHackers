@@ -29,8 +29,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { careerPathsAPI, userSkillsAPI } from '../services/api';
 import { getUserId } from '../utils/userHelpers';
-import PremiumSidebar from '../components/PremiumSidebar';
-import PremiumTopBar from '../components/PremiumTopBar';
 import PageTransition from '../components/PageTransition';
 import { healthcareColors, shadows } from '../theme';
 
@@ -49,7 +47,6 @@ const CareerPaths = () => {
   const [selectedCareer, setSelectedCareer] = useState(null);
   const [userSkills, setUserSkills] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   useEffect(() => {
@@ -130,9 +127,7 @@ const CareerPaths = () => {
     return (
       <PageTransition>
         <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: healthcareColors.background }}>
-          <PremiumSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
           <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-            <PremiumTopBar onMenuClick={() => setSidebarOpen(true)} />
             <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Box sx={{ textAlign: 'center' }}>
                 <CircularProgress size={60} sx={{ color: healthcareColors.primary }} />
@@ -149,14 +144,9 @@ const CareerPaths = () => {
 
   return (
     <PageTransition>
-      <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: healthcareColors.background }}>
-        <PremiumSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        
-        <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-          <PremiumTopBar onMenuClick={() => setSidebarOpen(true)} />
-          
-          <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
-            <Container maxWidth="xl">
+      <Box sx={{ minHeight: '100vh', bgcolor: healthcareColors.background }}>
+        <Box component="main" sx={{ p: 3 }}>
+          <Container maxWidth="xl">
               {/* Header */}
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
@@ -844,9 +834,8 @@ const CareerPaths = () => {
             </Container>
           </Box>
         </Box>
-      </Box>
-    </PageTransition>
-  );
-};
-
-export default CareerPaths;
+      </PageTransition>
+    );
+  };
+  
+  export default CareerPaths;

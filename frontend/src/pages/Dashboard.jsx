@@ -4,7 +4,6 @@ import {
   Box, 
   Container, 
   Grid, 
-  Toolbar, 
   Typography, 
   Button, 
   Alert,
@@ -23,8 +22,6 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { progressAPI, recommendationsAPI, userSkillsAPI, academicAPI, projectsAPI, learningActivitiesAPI } from '../services/api';
 import { getUserId } from '../utils/userHelpers';
-import PremiumSidebar, { drawerWidth } from '../components/PremiumSidebar';
-import PremiumTopBar from '../components/PremiumTopBar';
 import PremiumStatCard from '../components/PremiumStatCard';
 import PremiumProgressCard from '../components/PremiumProgressCard';
 import PremiumLoader from '../components/PremiumLoader';
@@ -36,7 +33,6 @@ const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [recommendations, setRecommendations] = useState([]);
   const [stats, setStats] = useState({
     totalSkills: 0,
@@ -133,40 +129,15 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex' }}>
-        <PremiumSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <Box
-          component="main"
-          sx={{
-            flexGrow: 1,
-            width: { md: `calc(100% - ${drawerWidth}px)` },
-            bgcolor: '#F8F9FA',
-            minHeight: '100vh',
-          }}
-        >
-          <PremiumTopBar onMenuClick={() => setSidebarOpen(true)} />
-          <Toolbar />
-          <Container maxWidth="xl" sx={{ py: 4 }}>
-            <PremiumLoader message="Loading your dashboard..." />
-          </Container>
-        </Box>
-      </Box>
+      <Container maxWidth="xl" sx={{ py: 4 }}>
+        <PremiumLoader message="Loading your dashboard..." />
+      </Container>
     );
   }
 
   return (
-    <Box sx={{ display: 'flex', bgcolor: '#F8F9FA', minHeight: '100vh' }}>
-      <PremiumSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          width: { md: `calc(100% - ${drawerWidth}px)` },
-        }}
-      >
-        <PremiumTopBar onMenuClick={() => setSidebarOpen(true)} />
-        <Toolbar />
-        <Container maxWidth="xl" sx={{ py: 4 }}>
+    <Box sx={{ bgcolor: '#F8F9FA', minHeight: 'calc(100vh - 64px)' }}>
+      <Container maxWidth="xl" sx={{ py: 4 }}>
           <Box
             component={motion.div}
             initial={{ opacity: 0, y: 20 }}
@@ -339,8 +310,7 @@ const Dashboard = () => {
           </Box>
         </Container>
       </Box>
-    </Box>
-  );
-};
-
-export default Dashboard;
+    );
+  };
+  
+  export default Dashboard;
