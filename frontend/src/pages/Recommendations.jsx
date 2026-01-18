@@ -192,7 +192,7 @@ const Recommendations = () => {
                       size="small" 
                       variant="contained" 
                       fullWidth
-                      onClick={() => navigate('/course-recommendations', { state: { skill: item.skill?.name } })}
+                      onClick={() => navigate('/course-recommendations', { state: { skill: item.skill?.name || '' } })}
                     >
                       Improve Skill
                     </Button>
