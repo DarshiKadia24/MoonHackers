@@ -50,9 +50,6 @@ function AppContent() {
       </Box>
     );
   }
-
-  // Check if current path is a public route (no navbar needed for login/register)
-  const isPublicAuthPage = location.pathname === '/login' || location.pathname === '/register';
   
   return (
     <div className="App">
