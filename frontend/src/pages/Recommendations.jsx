@@ -14,6 +14,7 @@ import {
 import {
   School as CourseIcon,
 } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { recommendationsAPI } from '../services/api';
 import { getSpecialtyColor, getSpecialtyBgColor } from '../theme';
@@ -21,6 +22,7 @@ import { getUserId } from '../utils/userHelpers';
 
 const Recommendations = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [recommendations, setRecommendations] = useState({
@@ -148,7 +150,12 @@ const Recommendations = () => {
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                       {skill.description}
                     </Typography>
-                    <Button size="small" variant="outlined" fullWidth>
+                    <Button 
+                      size="small" 
+                      variant="outlined" 
+                      fullWidth
+                      onClick={() => navigate('/course-recommendations', { state: { skill: skill.name } })}
+                    >
                       Learn More
                     </Button>
                   </CardContent>
@@ -181,7 +188,12 @@ const Recommendations = () => {
                         Current Score: {item.currentScore}/100
                       </Typography>
                     </Box>
-                    <Button size="small" variant="contained" fullWidth>
+                    <Button 
+                      size="small" 
+                      variant="contained" 
+                      fullWidth
+                      onClick={() => navigate('/course-recommendations', { state: { skill: item.skill?.name || '' } })}
+                    >
                       Improve Skill
                     </Button>
                   </CardContent>
@@ -284,7 +296,7 @@ const Recommendations = () => {
                     <Button
                       variant="outlined"
                       size="small"
-                      onClick={() => window.location.href = '/career-paths'}
+                      onClick={() => navigate('/career-paths', { state: { careerPath: path.title } })}
                     >
                       Explore Career Path
                     </Button>
