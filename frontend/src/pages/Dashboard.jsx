@@ -31,14 +31,12 @@ import PremiumLoader from '../components/PremiumLoader';
 import AcademicPerformanceCard from '../components/AcademicPerformanceCard';
 import RecentProjectsCard from '../components/RecentProjectsCard';
 import LearningActivityCard from '../components/LearningActivityCard';
-import { healthcareColors } from '../theme';
 
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [progressData, setProgressData] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
   const [stats, setStats] = useState({
     totalSkills: 0,
@@ -70,7 +68,6 @@ const Dashboard = () => {
       }
 
       const progressResponse = await progressAPI.getUserProgress(userId);
-      setProgressData(progressResponse.data);
 
       const recommendationsResponse = await recommendationsAPI.getUserRecommendations(userId);
       const recommendationsData = recommendationsResponse.data.recommendations || {};
@@ -126,14 +123,6 @@ const Dashboard = () => {
       setHasData(totalSkills > 0 || coursesCompleted > 0 || totalProjects > 0 || recentActivities.length > 0);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
-      setProgressData({
-        progress: {
-          overall: 0,
-          skillsByCategory: {},
-          skillsBySpecialty: {},
-          averageScore: 0,
-        },
-      });
       setRecommendations([]);
       setStats({ totalSkills: 0, coursesCompleted: 0, readinessScore: 0, gpa: 0, totalProjects: 0, learningHours: 0 });
       setHasData(false);
