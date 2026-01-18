@@ -80,7 +80,9 @@ const CourseRecommendations = () => {
   };
 
   const filteredRecommendations = () => {
-    if (!recommendations?.recommendations) return [];
+    if (!recommendations?.recommendations || !Array.isArray(recommendations.recommendations)) {
+      return [];
+    }
     
     if (activeTab === 0) {
       return recommendations.recommendations; // All
@@ -157,8 +159,15 @@ const CourseRecommendations = () => {
             </Box>
 
             <AnimatePresence mode="wait">
-              <Grid container spacing={3}>
-                {filteredRecommendations().map((rec, index) => (
+              {filteredRecommendations().length === 0 ? (
+                <Box sx={{ textAlign: 'center', py: 8 }}>
+                  <Alert severity="info">
+                    No course recommendations found for the selected filter. Try viewing "All Recommendations" or select a different target role.
+                  </Alert>
+                </Box>
+              ) : (
+                <Grid container spacing={3}>
+                  {filteredRecommendations().map((rec, index) => (
                   <Grid item xs={12} key={rec.skillId || index}>
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
@@ -195,7 +204,7 @@ const CourseRecommendations = () => {
                             Recommended Courses:
                           </Typography>
                           <Grid container spacing={2} sx={{ mt: 1 }}>
-                            {rec.courses.map((course, courseIndex) => (
+                            {(rec.courses || []).map((course, courseIndex) => (
                               <Grid item xs={12} md={6} key={course._id || courseIndex}>
                                 <motion.div
                                   whileHover={{ scale: 1.02 }}
@@ -262,13 +271,13 @@ const CourseRecommendations = () => {
                                           />
                                         )}
                                       </Box>
-                                      {course.whyRecommended && course.whyRecommended.length > 0 && (
+                                      {course.whyRecommended && Array.isArray(course.whyRecommended) && course.whyRecommended.length > 0 && (
                                         <Box sx={{ mt: 1 }}>
                                           <Typography variant="caption" color="text.secondary">
                                             Why recommended:
                                           </Typography>
                                           <ul style={{ margin: '4px 0', paddingLeft: '20px' }}>
-                                            {course.whyRecommended.map((reason, idx) => (
+                                            {(course.whyRecommended || []).map((reason, idx) => (
                                               <li key={idx}>
                                                 <Typography variant="caption" color="text.secondary">
                                                   {reason}
@@ -300,18 +309,18 @@ const CourseRecommendations = () => {
                             ))}
                           </Grid>
 
-                          {rec.learningPath && rec.learningPath.length > 0 && (
+                          {rec.learningPath && Array.isArray(rec.learningPath) && rec.learningPath.length > 0 && (
                             <Box sx={{ mt: 3, p: 2, bgcolor: healthcareColors.light + '40', borderRadius: 2 }}>
                               <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600 }}>
                                 Learning Path for {rec.skill}:
                               </Typography>
-                              {rec.learningPath.map((phase, phaseIndex) => (
+                              {(rec.learningPath || []).map((phase, phaseIndex) => (
                                 <Box key={phaseIndex} sx={{ mt: 1 }}>
                                   <Typography variant="body2" sx={{ fontWeight: 600 }}>
                                     {phase.phase} ({phase.estimatedTime})
                                   </Typography>
                                   <ul style={{ margin: '4px 0', paddingLeft: '20px' }}>
-                                    {phase.actions.map((action, actionIndex) => (
+                                    {(phase.actions || []).map((action, actionIndex) => (
                                       <li key={actionIndex}>
                                         <Typography variant="caption" color="text.secondary">
                                           {action}
@@ -327,8 +336,9 @@ const CourseRecommendations = () => {
                       </Card>
                     </motion.div>
                   </Grid>
-                ))}
-              </Grid>
+                  ))}
+                </Grid>
+              )}
             </AnimatePresence>
           </>
         )}

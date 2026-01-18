@@ -278,7 +278,7 @@ const Recommendations = () => {
                     </Typography>
                     {path.salaryRange && (
                       <Typography variant="body2" sx={{ mb: 2 }}>
-                        Salary: ${path.salaryRange.min?.toLocaleString()} - ${path.salaryRange.max?.toLocaleString()}
+                        Salary: ${path.salaryRange.min?.toLocaleString() || 'N/A'} - ${path.salaryRange.max?.toLocaleString() || 'N/A'}
                       </Typography>
                     )}
                     <Button

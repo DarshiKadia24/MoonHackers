@@ -345,7 +345,7 @@ const GapAnalysis = () => {
                           Immediate attention required for {analysis.criticalGaps} critical skills
                         </Alert>
                         <Box sx={{ maxHeight: 200, overflowY: 'auto' }}>
-                          {analysis.gaps
+                          {(analysis.gaps || [])
                             .filter(gap => gap.gapSeverity === 'critical')
                             .map((gap, index) => (
                               <Box key={gap.skillId} sx={{ mb: 1, p: 1, bgcolor: '#ffebee', borderRadius: 1, opacity: 0 }}>
@@ -428,7 +428,7 @@ const GapAnalysis = () => {
                         <Typography variant="subtitle2" gutterBottom>
                           {category} ({data.totalGaps} skills)
                         </Typography>
-                        {data.gaps.slice(0, 3).map(gap => (
+                        {(data.gaps || []).slice(0, 3).map(gap => (
                           <Box key={gap.skillId} sx={{ mb: 1 }}>
                             <Box display="flex" justifyContent="space-between" alignItems="center">
                               <Typography variant="body2">{gap.skillName}</Typography>
